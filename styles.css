@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PUT ME ON - FULL STYLESHEET
+   PUT ME ON - COMPLETE STYLESHEET
    ========================================================================== */
 
 body {
@@ -9,11 +9,12 @@ body {
     text-align: center;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {
     color: #7FDBFF;
-    font-size: 64px;
+    font-size: 54px;
     font-weight: 900;
     letter-spacing: 2px;
     margin-bottom: 5px;
@@ -22,13 +23,13 @@ h1 {
 
 h2 {
     color: #b18cff;
-    margin-top: 40px;
-    font-size: 32px;
+    margin-top: 30px;
+    font-size: 28px;
 }
 
 h3 {
     color: #a0aec0;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     margin-top: 5px;
 }
@@ -37,7 +38,7 @@ p {
     max-width: 800px;
     margin: auto;
     line-height: 1.7;
-    padding: 12px;
+    padding: 10px;
     color: #cbd5e1;
 }
 
@@ -45,46 +46,12 @@ hr {
     border: 0;
     height: 1px;
     background: linear-gradient(to right, transparent, #7FDBFF, transparent);
-    margin: 40px auto;
+    margin: 30px auto;
     width: 80%;
 }
 
 /* ==========================================================================
-   BUTTONS & GENERAL LINKS
-   ========================================================================== */
-
-button, .btn-primary {
-    background-color: #7FDBFF;
-    color: #0d0e12;
-    border: none;
-    padding: 12px 24px;
-    margin: 10px;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-button:hover, .btn-primary:hover {
-    background-color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
-}
-
-a {
-    color: #7FDBFF;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-a:hover {
-    color: white;
-}
-
-/* ==========================================================================
-   BALANCED CENTERED NAVIGATION BAR
+   NAVIGATION BAR (CENTERED GRID LAYOUT)
    ========================================================================== */
 
 nav {
@@ -93,20 +60,19 @@ nav {
     background-color: rgba(13, 14, 18, 0.95);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(127, 219, 255, 0.2);
-    padding: 12px 30px;
+    padding: 12px 25px;
     z-index: 1000;
 }
 
 .nav-container {
     max-width: 1250px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr; /* Centers search bar perfectly */
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
-/* Left Links */
 .navbar-links {
     display: flex;
     align-items: center;
@@ -116,11 +82,10 @@ nav {
     margin: 0;
 }
 
-/* Center Search Bar Container */
 .nav-search-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    flex-grow: 1;
+    max-width: 450px;
+    margin: 0 15px;
 }
 
 #music-search {
@@ -143,15 +108,13 @@ nav {
     text-align: left;
 }
 
-/* Right Action Area */
 .nav-actions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 10px;
 }
 
-/* Color Bubble / Pill Styling */
+/* NAVIGATION PILL BUTTONS */
 .nav-pill {
     display: inline-flex;
     align-items: center;
@@ -160,10 +123,11 @@ nav {
     border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all 0.2s ease;
     border: none;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .nav-pill:hover {
@@ -171,7 +135,6 @@ nav {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Custom Colored Bubbles */
 .nav-home {
     background-color: rgba(255, 255, 255, 0.08);
     color: #f3f4f6;
@@ -205,51 +168,10 @@ nav {
     background-color: #161922;
     color: #a0aec0;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 0;
 }
 
 /* ==========================================================================
-   HEADER & HERO SECTIONS
-   ========================================================================== */
-
-.header-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 40px auto;
-    max-width: 900px;
-}
-
-#header-img {
-    width: 220px;
-    height: auto;
-    margin-bottom: 25px;
-    animation: rotateVinyl 20s linear infinite;
-}
-
-@keyframes rotateVinyl {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.header-button {
-    background-color: transparent;
-    color: #7FDBFF;
-    border: 2px solid #7FDBFF;
-    font-size: 16px;
-    padding: 12px 24px;
-    margin: 8px;
-    border-radius: 25px;
-}
-
-.header-button:hover {
-    background-color: #7FDBFF;
-    color: #0d0e12;
-}
-
-/* ==========================================================================
-   CONTAINERS & CARDS
+   CONTAINERS, CARDS & LAYOUTS
    ========================================================================== */
 
 .section-container {
@@ -263,7 +185,7 @@ nav {
 }
 
 .center-page {
-    max-width: 800px;
+    max-width: 500px;
     margin: 40px auto !important;
     text-align: center !important;
     display: flex;
@@ -272,50 +194,39 @@ nav {
     justify-content: center;
 }
 
-.center-page p {
-    text-align: center !important;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.song-card {
-    background-color: #161922;
-    max-width: 700px;
-    margin: auto;
-    padding: 25px;
-    border-radius: 16px;
-    border: 1px solid rgba(127, 219, 255, 0.3);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.feature-box {
-    background-color: #161922;
-    border-radius: 16px;
-    padding: 30px;
-    margin: 30px auto;
-    max-width: 800px;
-    border: 1px solid rgba(127, 219, 255, 0.3);
+.header-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin: 30px auto;
 }
 
-.putmeon-box {
-    background-color: #161922;
-    border-radius: 16px;
-    padding: 35px;
-    margin: 40px auto;
-    max-width: 800px;
-    border: 1px solid rgba(177, 140, 255, 0.4);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+#header-img {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: rotateVinyl 20s linear infinite;
 }
 
-.putmeon-title {
-    color: #ff4136;
-    font-size: 50px;
+@keyframes rotateVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+button {
+    background-color: #7FDBFF;
+    color: #0d0e12;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
 }
 
 .footer {
@@ -324,78 +235,51 @@ nav {
     padding: 20px 0;
     text-align: center;
     border-top: 1px solid rgba(127, 219, 255, 0.2);
-    margin-top: 60px;
+    margin-top: 50px;
     color: #a0aec0;
 }
 
 /* ==========================================================================
-   PROFILE PAGE TABS
+   LIGHT MODE SUPPORT
    ========================================================================== */
 
-.profile-tab-btn {
-    background-color: transparent;
-    color: #a0aec0;
-    border: 1px solid rgba(127, 219, 255, 0.2);
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+body.light-mode {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
 }
 
-.profile-tab-btn:hover {
-    color: #f3f4f6;
-    border-color: #7FDBFF;
+body.light-mode nav {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid #cbd5e1 !important;
 }
 
-.profile-tab-btn.active-tab {
-    background-color: #7FDBFF;
-    color: #0d0e12;
-    border-color: #7FDBFF;
-    font-weight: bold;
+body.light-mode #music-search {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
 }
 
-/* ==========================================================================
-   LIGHT MODE STYLES
-   ========================================================================== */
-
-.light-mode {
-    background-color: #f8fafc;
-    color: #1e293b;
+body.light-mode .section-container {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
-.light-mode nav {
-    background-color: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid #e2e8f0;
+body.light-mode h1 {
+    color: #0066cc !important;
+    text-shadow: none !important;
 }
 
-.light-mode #music-search {
-    background-color: #f1f5f9;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
+body.light-mode h2 {
+    color: #6366f1 !important;
 }
 
-.light-mode h1 {
-    color: #0066cc;
-    text-shadow: none;
+body.light-mode p {
+    color: #334155 !important;
 }
 
-.light-mode .section-container,
-.light-mode .song-card,
-.light-mode .feature-box,
-.light-mode .putmeon-box {
-    background-color: #ffffff;
-    color: #1e293b;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.light-mode p {
-    color: #475569;
-}
-
-.light-mode .footer {
-    background-color: #f1f5f9;
-    color: #64748b;
-    border-top: 1px solid #e2e8f0;
+body.light-mode .footer {
+    background-color: #e2e8f0 !important;
+    color: #475569 !important;
 }
