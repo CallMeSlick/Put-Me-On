@@ -12,30 +12,40 @@
     <nav>
         <div class="nav-container">
             <ul class="navbar-links">
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#mascot">Mascot</a></li>
-                <li><a href="index.html#future">AI Features</a></li>
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">Messages</a></li>
             </ul>
 
             <div class="nav-search-container">
-                <input type="text" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+                <form action="search.html" method="GET" id="search-form">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
+                </form>
             </div>
 
             <div class="nav-actions">
-                <a href="index.html#post" class="nav-post-btn">➕ Post</a>
-                <button id="theme-button">Toggle Theme</button>
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
             </div>
         </div>
     </nav>
 
-    <div class="section-container" style="max-width: 900px; margin-top: 40px;">
-        <h1 id="search-title" style="font-size: 36px;">Search Results</h1>
-        <p id="search-subtitle">Searching Spotify...</p>
-        
-        <div id="results-list" style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
-            </div>
+    <div class="section-container center-page" style="max-width: 750px;">
+        <h1 style="color: #7FDBFF; margin-bottom: 5px;">Search Results</h1>
+        <p id="search-query-label" style="color: #a0aec0; margin-bottom: 25px;">Searching music database...</p>
+
+        <div id="search-results-container" style="display: flex; flex-direction: column; gap: 15px; width: 100%;"></div>
+    </div>
+
+    <div class="footer">
+        <a href="license.html">License & Disclaimer</a> |
+        <a href="about.html">About</a> |
+        <a href="mascot.html">Mascot</a>
     </div>
 
     <script src="index.js"></script>
 </body>
+
 </html>
