@@ -292,3 +292,67 @@ document.addEventListener("click", (e) => {
         dropdown.style.display = "none";
     }
 });
+
+// =========================
+// SONG DETAIL PAGE (song.html)
+// =========================
+window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackId = urlParams.get("id");
+
+    if (trackId && document.getElementById("song-detail-card")) {
+        loadSongDetails(trackId);
+    }
+});
+
+async function loadSongDetails(trackId) {
+    const loadingDiv = document.getElementById("song-loading");
+    const cardDiv = document.getElementById("song-detail-card");
+
+    try {
+        const tokenResponse = await fetch("/api/spotify-token");
+        const tokenData = await tokenResponse.json();
+
+        if (!tokenData.token) {
+            loadingDiv.innerHTML = "<h2>Unable to connect to Spotify.</h2>";
+            return;
+        }
+
+        const response = await fetch(`developer.spotify.com${trackId}`, {
+            headers: { 'Authorization': `Bearer ${tokenData.token}` }
+        });
+
+        const track = await response.json();
+
+        // Fill in song details
+        document.getElementById("song-cover").src = track.album.images[0]?.url;
+        document.getElementById("song-title").textContent = track.name;
+        document.getElementById("song-artist").textContent = `Artist: ${track.artists.map(a => a.name).join(", ")}`;
+        document.getElementById("song-album").textContent = `Album: ${track.album.name} (${track.album.release_date.split('-')[0]})`;
+
+        // Handle Audio Preview
+        const audioElement = document.getElementById("audio-preview");
+        const audioContainer = document.getElementById("audio-container");
+        const noPreview = document.getElementById("no-preview");
+
+        if (track.preview_url) {
+            audioElement.src = track.preview_url;
+            audioContainer.style.display = "block";
+            noPreview.style.display = "none";
+        } else {
+            audioContainer.style.display = "none";
+            noPreview.style.display = "block";
+        }
+
+        // Recommend button action
+        document.getElementById("recommend-btn").addEventListener("click", () => {
+            window.location.href = `index.html#post`;
+        });
+
+        loadingDiv.style.display = "none";
+        cardDiv.style.display = "flex";
+    } catch (err) {
+        console.error(err);
+        loadingDiv.innerHTML = "<h2>Error loading song details.</h2>";
+    }
+}
