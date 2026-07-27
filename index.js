@@ -82,19 +82,28 @@ if (searchInput) {
 // ==========================================================================
 
 // 1. SIGN IN
+// 2. SIGN IN LOGIC (Updated Debug Handler)
 const signinForm = document.getElementById("signin-form");
 if (signinForm) {
     signinForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const username = document.getElementById("signin-username").value.trim().toLowerCase();
-        const pass = document.getElementById("signin-password").value;
+        
+        const usernameInput = document.getElementById("signin-username");
+        const passwordInput = document.getElementById("signin-password");
         const errorEl = document.getElementById("auth-error");
+
+        if (!usernameInput || !passwordInput) return;
+
+        const username = usernameInput.value.trim().toLowerCase();
+        const pass = passwordInput.value;
 
         const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
+        // Check if user exists and password matches
         if (!users[username] || users[username].pass !== pass) {
             if (errorEl) {
                 errorEl.textContent = "Error: Invalid username or password!";
+                errorEl.style.color = "#ff4136";
                 errorEl.style.display = "block";
             } else {
                 alert("Invalid username or password!");
@@ -102,9 +111,13 @@ if (signinForm) {
             return;
         }
 
+        // Successfully logged in!
         localStorage.setItem("loggedInUser", username);
+        alert(`Welcome back, @${username}!`);
+        
+        // Redirect back home or previous page
         const prev = sessionStorage.getItem("previousPage") || "index.html";
-        window.location.href = prev === "signin.html" ? "index.html" : prev;
+        window.location.href = (prev === "signin.html" || prev === "signup.html") ? "index.html" : prev;
     });
 }
 
