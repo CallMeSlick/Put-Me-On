@@ -283,3 +283,58 @@ body.light-mode .footer {
     background-color: #e2e8f0 !important;
     color: #475569 !important;
 }
+
+/* ==========================================================================
+   HERO BUTTONS & FOOTER LINK HOVER FIXES
+   ========================================================================== */
+
+.header-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.header-button {
+    background-color: transparent;
+    color: #7FDBFF !important;
+    border: 2px solid #7FDBFF;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border-radius: 25px;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.header-button:hover {
+    background-color: #7FDBFF;
+    color: #0d0e12 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(127, 219, 255, 0.4);
+}
+
+/* Footer Link Styles */
+.footer {
+    width: 100%;
+    background-color: #161922;
+    padding: 22px 0;
+    text-align: center;
+    border-top: 1px solid rgba(127, 219, 255, 0.2);
+    margin-top: 50px;
+    color: #a0aec0;
+}
+
+.footer a {
+    color: #7FDBFF !important;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 10px;
+    transition: all 0.2s ease;
+}
+
+.footer a:hover {
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(127, 219, 255, 0.6);
+}
