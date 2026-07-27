@@ -338,3 +338,190 @@ body.light-mode .footer {
     color: #ffffff !important;
     text-shadow: 0 0 8px rgba(127, 219, 255, 0.6);
 }
+
+/* ==========================================================================
+   MESSAGING CONTAINER LAYOUT & GEAR BUTTON
+   ========================================================================== */
+
+.chat-app-container {
+    display: flex;
+    max-width: 1050px;
+    height: 70vh;
+    margin: 30px auto;
+    background: #161922;
+    border-radius: 16px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    overflow: hidden;
+    text-align: left;
+}
+
+.chat-sidebar {
+    width: 300px;
+    border-right: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    background: rgba(13, 14, 18, 0.6);
+}
+
+.sidebar-header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+}
+
+.threads-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.thread-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+.thread-card:hover, .thread-card.active-thread {
+    background: rgba(127, 219, 255, 0.12);
+}
+
+.thread-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.group-avatar-icon {
+    background: #b18cff;
+    color: #0d0e12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.thread-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.thread-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.thread-name {
+    color: #f3f4f6;
+    font-size: 13px;
+}
+
+.thread-time {
+    color: #a0aec0;
+    font-size: 10px;
+}
+
+.thread-preview {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    color: #a0aec0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.unread-badge {
+    background-color: #ff4136;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+}
+
+.chat-window {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #0d0e12;
+}
+
+.chat-header {
+    padding: 12px 20px;
+    background: rgba(22, 25, 34, 0.95);
+    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message-bubble {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+}
+
+.message-bubble.received {
+    align-self: flex-start;
+    background: #161922;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f3f4f6;
+}
+
+.message-bubble.sent {
+    align-self: flex-end;
+    background: #7FDBFF;
+    color: #0d0e12;
+}
+
+.message-sender {
+    display: block;
+    font-size: 10px;
+    opacity: 0.75;
+    margin-bottom: 4px;
+}
+
+.shared-song-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.chat-input-area {
+    padding: 12px 15px;
+    background: rgba(22, 25, 34, 0.95);
+    border-top: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-area input {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    background: #0d0e12;
+    color: white;
+    font-size: 13px;
+}
