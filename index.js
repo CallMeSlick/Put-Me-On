@@ -628,3 +628,98 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// =========================
+// CHAT & GROUP MESSAGING LOGIC
+// =========================
+let currentActiveChat = 'alex';
+
+// Send message logic
+document.addEventListener("DOMContentLoaded", () => {
+    const sendForm = document.getElementById("send-message-form");
+    const msgInput = document.getElementById("message-text-input");
+    const messagesLog = document.getElementById("messages-log");
+
+    if (sendForm && messagesLog) {
+        sendForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const text = msgInput.value.trim();
+            if (!text) return;
+
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const newBubble = document.createElement("div");
+            newBubble.className = "message-bubble sent";
+            newBubble.innerHTML = `
+                <small class="message-sender">You • ${timeNow}</small>
+                <p>${text}</p>
+            `;
+
+            messagesLog.appendChild(newBubble);
+            msgInput.value = "";
+            messagesLog.scrollTop = messagesLog.scrollHeight;
+        });
+    }
+
+    // Modal controls for new group chat
+    const groupModal = document.getElementById("group-modal");
+    const openGroupBtn = document.getElementById("open-group-modal-btn");
+    const createGroupForm = document.getElementById("create-group-form");
+
+    if (openGroupBtn && groupModal) {
+        openGroupBtn.addEventListener("click", () => groupModal.style.display = "flex");
+    }
+
+    if (createGroupForm) {
+        createGroupForm.addEventListener("click", (e) => e.stopPropagation());
+        createGroupForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const groupName = document.getElementById("group-name-input").value.trim();
+            if (!groupName) return;
+
+            const threadsList = document.getElementById("chat-threads-list");
+            const newThread = document.createElement("div");
+            newThread.className = "thread-card";
+            newThread.innerHTML = `
+                <div class="thread-avatar group-avatar-icon">👥</div>
+                <div class="thread-info">
+                    <div class="thread-top">
+                        <strong class="thread-name">${groupName}</strong>
+                        <span class="thread-time">Just now</span>
+                    </div>
+                    <p class="thread-preview">Group created!</p>
+                </div>
+            `;
+
+            threadsList.prepend(newThread);
+            closeGroupModal();
+            alert(`Group chat "${groupName}" created with selected mutuals!`);
+        });
+    }
+});
+
+function closeGroupModal() {
+    const groupModal = document.getElementById("group-modal");
+    if (groupModal) groupModal.style.display = "none";
+}
+
+// Customize Chat Background & Name
+function editChatSettings() {
+    const chatBox = document.getElementById("chat-window-box");
+    const chatTitle = document.getElementById("chat-title");
+
+    const newName = prompt("Rename this chat or group:", chatTitle.textContent);
+    if (newName && newName.trim() !== "") {
+        chatTitle.textContent = newName.trim();
+    }
+
+    const bgChoice = prompt("Custom Chat Background:\nEnter a Hex Color (e.g. #1e1b4b) or Image URL:");
+    if (bgChoice && bgChoice.trim() !== "") {
+        if (bgChoice.startsWith("http")) {
+            chatBox.style.backgroundImage = `url('${bgChoice.trim()}')`;
+        } else {
+            chatBox.style.backgroundImage = "none";
+            chatBox.style.backgroundColor = bgChoice.trim();
+        }
+    }
+}
