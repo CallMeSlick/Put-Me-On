@@ -29,18 +29,27 @@ function checkUserSession() {
     const loggedInUser = localStorage.getItem("loggedInUser");
     const navActions = document.querySelector(".nav-actions");
 
-    if (loggedInUser && navActions) {
-        const userDisplayName = document.getElementById("user-display-name");
-        if (userDisplayName) {
-            userDisplayName.textContent = `@${loggedInUser}`;
-        }
+    if (navActions) {
+        if (loggedInUser) {
+            const userDisplayName = document.getElementById("user-display-name");
+            if (userDisplayName) {
+                userDisplayName.textContent = `@${loggedInUser}`;
+            }
 
-        navActions.innerHTML = `
-            <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 Profile</a>
-            <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">➕ Post</a>
-            <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
-            <button id="theme-button" class="nav-pill nav-theme">Theme</button>
-        `;
+            navActions.innerHTML = `
+                <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 Profile</a>
+                <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">➕ Post</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+            `;
+        } else {
+            navActions.innerHTML = `
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+            `;
+        }
 
         const themeBtn = document.getElementById("theme-button");
         if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
