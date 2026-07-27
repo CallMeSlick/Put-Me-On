@@ -11,27 +11,26 @@
 <body>
 
     <nav>
-        <div class="nav-container">
-            <ul class="navbar-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="mascot.html">Mascot</a></li>
-                <li><a href="ai-matcher.html">AI Vibe Matcher</a></li>
-                <li><a href="license.html">License</a></li>
-            </ul>
+    <div class="nav-container">
+        <ul class="navbar-links">
+            <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+            <li><a href="ai-matcher.html" class="nav-pill nav-ai">🤖 AI Matcher</a></li>
+            <li><a href="messages.html" class="nav-pill nav-msg">💬 Messages</a></li>
+        </ul>
 
-            <div class="nav-search-container">
-                <form action="search.html" method="GET" id="search-form">
-                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
-                </form>
-            </div>
-
-            <div class="nav-actions">
-                <a href="profile.html" class="nav-post-btn">Profile</a>
-                <button id="theme-button">Toggle Theme</button>
-            </div>
+        <div class="nav-search-container">
+            <form action="search.html" method="GET" id="search-form">
+                <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
+            </form>
         </div>
-    </nav>
+
+        <div class="nav-actions">
+            <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+            <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+            <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+        </div>
+    </div>
+</nav>
 
     <div class="header-container">
         <img id="header-img" src="PutMeOnLogo.png" alt="Put Me On Logo">
