@@ -1,0 +1,537 @@
+body {
+    background-color: #0d0e12;
+    color: #f3f4f6;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #7FDBFF;
+    font-size: 64px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    text-shadow: 0px 4px 12px rgba(127, 219, 255, 0.3);
+}
+
+h2 {
+    color: #b18cff;
+    margin-top: 50px;
+    font-size: 32px;
+}
+
+h3 {
+    color: #a0aec0;
+    font-size: 20px;
+    font-weight: 400;
+    margin-top: 5px;
+}
+
+p {
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.7;
+    padding: 12px;
+    color: #cbd5e1;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #7FDBFF, transparent);
+    margin: 40px auto;
+    width: 80%;
+}
+
+/* ========================= */
+/* BUTTONS & LINKS */
+/* ========================= */
+
+button {
+    background-color: #7FDBFF;
+    color: #0d0e12;
+    border: none;
+    padding: 12px 24px;
+    margin: 10px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
+}
+
+img {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+a {
+    color: #7FDBFF;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:visited {
+    color: #b18cff;
+}
+
+a:hover {
+    color: white;
+}
+
+/* ========================= */
+/* STICKY MODERN NAVIGATION WRAPPER */
+/* ========================= */
+
+nav {
+    position: sticky;
+    top: 0;
+    background-color: rgba(22, 25, 34, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+    padding: 12px 24px;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.navbar-links {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 20px;
+}
+
+.navbar-links a {
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.navbar-links a:hover {
+    color: #7FDBFF;
+}
+
+/* SEARCH BAR RESIDING IN NAVBAR */
+.nav-search-container {
+    flex-grow: 1;
+    max-width: 450px;
+}
+
+#music-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(177, 140, 255, 0.6);
+    background-color: #0d0e12;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#music-search:focus {
+    border-color: #7FDBFF;
+    box-shadow: 0 0 10px rgba(127, 219, 255, 0.3);
+}
+
+/* QUICK ACTIONS SET CONTAINER */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-post-btn {
+    background-color: #b18cff;
+    color: #0d0e12;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.nav-post-btn:hover {
+    background-color: white;
+    color: black;
+    transform: translateY(-1px);
+}
+
+#theme-button {
+    background-color: transparent;
+    color: #7FDBFF;
+    border: 1px solid #7FDBFF;
+    padding: 8px 14px;
+    margin: 0;
+    font-size: 13px;
+    border-radius: 20px;
+    box-shadow: none;
+}
+
+#theme-button:hover {
+    background-color: #7FDBFF;
+    color: #0d0e12;
+}
+
+/* ========================= */
+/* HEADER HERO BLOCK */
+/* ========================= */
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 40px auto;
+    max-width: 900px;
+}
+
+#header-img {
+    width: 220px;
+    height: auto;
+    margin-bottom: 25px;
+    animation: rotateVinyl 20s linear infinite;
+}
+
+@keyframes rotateVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.header-content {
+    width: 100%;
+}
+
+.header-buttons-container {
+    margin: 20px 0;
+}
+
+.header-button {
+    background-color: transparent;
+    color: #7FDBFF;
+    border: 2px solid #7FDBFF;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 8px;
+    border-radius: 25px;
+}
+
+.header-button:hover {
+    background-color: #7FDBFF;
+    color: #0d0e12;
+}
+
+/* ========================= */
+/* CONTAINER BOXES */
+/* ========================= */
+
+.song-card {
+    background-color: #161922;
+    max-width: 700px;
+    margin: auto;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.putmeon-box {
+    background-color: #161922;
+    border-radius: 16px;
+    padding: 35px;
+    margin: 40px auto;
+    max-width: 800px;
+    border: 1px solid rgba(177, 140, 255, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.putmeon-title {
+    color: #ff4136;
+    font-size: 60px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+.feature-box {
+    background-color: #161922;
+    border-radius: 16px;
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 800px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ul:not(.navbar-links) {
+    max-width: 600px;
+    margin: auto;
+    text-align: left;
+    background: #11131a;
+    padding: 20px 40px;
+    border-radius: 12px;
+    border-left: 4px solid #7FDBFF;
+}
+
+ul li {
+    margin-bottom: 12px;
+    color: #e2e8f0;
+}
+
+/* ========================= */
+/* PETITION SECTION */
+/* ========================= */
+
+.petition {
+    background-color: #161922;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    border-radius: 16px;
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 35px;
+}
+
+.petition-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.petition-para {
+    width: 50%;
+    text-align: left;
+    line-height: 1.7;
+}
+
+.signatures {
+    width: 50%;
+    text-align: left;
+}
+
+.signatures p {
+    margin-bottom: 15px;
+}
+
+#sign-petition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+#sign-petition input {
+    background-color: #0d0e12;
+    color: white;
+    padding: 12px;
+    width: 320px;
+    border-radius: 8px;
+    border: 1px solid rgba(127, 219, 255, 0.4);
+    font-size: 16px;
+}
+
+#sign-petition input:focus {
+    outline: none;
+    border-color: #7FDBFF;
+}
+
+.error {
+    border: 2px solid #ff4136 !important;
+    background-color: rgba(255, 65, 54, 0.15) !important;
+}
+
+.footer {
+    width: 100%;
+    background-color: #161922;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid rgba(127, 219, 255, 0.2);
+    margin-top: 60px;
+    color: #a0aec0;
+}
+
+/* ========================= */
+/* REVISED BALANCED LIGHT MODE STYLES */
+/* ========================= */
+
+.light-mode {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.light-mode nav {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.light-mode .navbar-links a {
+    color: #475569;
+}
+
+.light-mode .navbar-links a:hover {
+    color: #0066cc;
+}
+
+.light-mode #music-search {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+}
+
+.light-mode #music-search:focus {
+    border-color: #0066cc;
+}
+
+.light-mode h1 {
+    color: #0066cc;
+    text-shadow: none;
+}
+
+.light-mode h2 {
+    color: #6366f1;
+}
+
+.light-mode hr {
+    background: linear-gradient(to right, transparent, #0066cc, transparent);
+}
+
+.light-mode .song-card,
+.light-mode .feature-box,
+.light-mode .putmeon-box,
+.light-mode .petition,
+.light-mode ul:not(.navbar-links) {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.light-mode ul:not(.navbar-links) {
+    border-left: 4px solid #0066cc;
+}
+
+.light-mode p {
+    color: #475569;
+}
+
+.light-mode #sign-petition input {
+    background-color: #f8fafc;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+}
+
+.light-mode #theme-button {
+    border-color: #0066cc;
+    color: #0066cc;
+}
+
+.light-mode #theme-button:hover {
+    background-color: #0066cc;
+    color: white;
+}
+
+.light-mode .footer {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ========================= */
+/* SCROLL REVEAL STYLES */
+/* ========================= */
+
+.revealable {
+    position: relative;
+    transform: translateY(40px);
+    opacity: 0;
+}
+
+.revealable.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ========================= */
+/* MODAL POPUP STYLES */
+/* ========================= */
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #161922;
+    border: 2px solid #7FDBFF;
+    border-radius: 20px;
+    padding: 35px;
+    max-width: 450px;
+    width: 85%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+#close-modal-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    color: #a0aec0;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#close-modal-btn:hover {
+    color: #7FDBFF;
+}
+
+#modal-img {
+    width: 160px;
+    height: auto;
+    margin-top: 20px;
+    transition: transform 0.1s ease-in-out;
+}
+
+/* Light Mode Modal Support */
+.light-mode .modal-content {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 2px solid #0066cc;
+}
