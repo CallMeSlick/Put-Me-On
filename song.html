@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Song Details - Put Me On</title>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="PutMeOnLogo.png">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <ul class="navbar-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#mascot">Mascot</a></li>
+                <li><a href="index.html#future">AI Features</a></li>
+            </ul>
+
+            <div class="nav-search-container">
+                <input type="text" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+            </div>
+
+            <div class="nav-actions">
+                <a href="index.html#post" class="nav-post-btn">➕ Post</a>
+                <button id="theme-button">Toggle Theme</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="section-container" style="max-width: 800px; margin-top: 40px; text-align: center;">
+        <div id="song-loading" style="padding: 40px;">
+            <h2>Loading Song Details...</h2>
+        </div>
+
+        <div id="song-detail-card" style="display: none; flex-direction: column; align-items: center; gap: 20px;">
+            <img id="song-cover" src="" alt="Album Cover" style="width: 280px; height: 280px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            
+            <h1 id="song-title" style="font-size: 42px; margin-bottom: 0;"></h1>
+            <h3 id="song-artist" style="color: #b18cff; font-size: 24px; margin-top: 5px;"></h3>
+            <p id="song-album" style="color: #a0aec0; font-size: 16px; margin: 0;"></p>
+
+            <div id="audio-container" style="margin-top: 15px; width: 100%; max-width: 400px;">
+                <p style="font-size: 14px; color: #7FDBFF; margin-bottom: 8px;">🎵 30-Second Preview</p>
+                <audio id="audio-preview" controls style="width: 100%;"></audio>
+            </div>
+            
+            <p id="no-preview" style="display: none; color: #a0aec0; font-style: italic;">Audio preview not available for this track on Spotify.</p>
+
+            <div style="margin-top: 25px; display: flex; gap: 15px;">
+                <button id="recommend-btn" style="padding: 14px 28px; font-size: 16px;">🔥 Put Someone On To This Track</button>
+                <a href="index.html" class="header-button" style="text-decoration: none; padding: 12px 24px;">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
