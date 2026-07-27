@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Album Details - Put Me On</title>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="PutMeOnLogo.png">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <ul class="navbar-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#mascot">Mascot</a></li>
+                <li><a href="index.html#future">AI Features</a></li>
+            </ul>
+
+            <div class="nav-search-container">
+                <form action="search.html" method="GET" id="search-form">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+                </form>
+            </div>
+
+            <div class="nav-actions">
+                <a href="index.html#post" class="nav-post-btn">➕ Post</a>
+                <button id="theme-button">Toggle Theme</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="section-container" style="max-width: 900px; margin-top: 40px; text-align: center;">
+        <div id="album-loading" style="padding: 40px;">
+            <h2>Loading Album Details...</h2>
+        </div>
+
+        <div id="album-profile" style="display: none; flex-direction: column; align-items: center; gap: 15px;">
+            <img id="album-cover-img" src="" alt="Album Artwork" style="width: 250px; height: 250px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <h1 id="album-title-text" style="font-size: 40px; margin: 10px 0 0 0;"></h1>
+            <h3 id="album-artist-name" style="color: #7FDBFF; font-size: 22px; margin-top: 5px;"></h3>
+            <p id="album-meta-info" style="color: #a0aec0; margin: 0;"></p>
+        </div>
+    </div>
+
+    <div id="album-content-container" style="display: none; max-width: 900px; margin: 20px auto;">
+        
+        <div class="section-container" style="margin-bottom: 30px;">
+            <h2 style="margin-top: 0; color: #b18cff;">🎶 Album Tracklist</h2>
+            <div id="album-tracklist" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left;">
+                </div>
+        </div>
+
+        <div class="section-container">
+            <h2 style="margin-top: 0; color: #7FDBFF;">⭐ Album Reviews & Discussions</h2>
+            <div id="album-comments-list" style="text-align: left; margin: 20px 0;">
+                <p class="no-album-comments" style="color: #a0aec0; font-style: italic;">No reviews for this album yet. What rating would you give this project?</p>
+            </div>
+
+            <form id="album-comment-form" style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: auto;">
+                <input type="text" id="album-user" placeholder="Your Username" style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <textarea id="album-review-text" placeholder="Share your review or favorite tracks from this album..." rows="3" style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white; resize: vertical;"></textarea>
+                <button type="submit" style="align-self: center; padding: 10px 24px;">Submit Review</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
