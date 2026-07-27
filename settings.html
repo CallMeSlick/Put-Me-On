@@ -33,11 +33,11 @@
     </nav>
 
     <div class="section-container center-page" style="max-width: 550px;">
-        <h1 style="color: #7FDBFF; margin-bottom: 20px;">⚙️ Account Settings</h1>
+        <h1 style="color: #7FDBFF; margin-bottom: 20px;">Settings</h1>
 
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 25px;">
-            <img id="settings-pfp-preview" src="PutMeOnMascot.png" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #7FDBFF;">
-            <label for="pfp-file-input" class="nav-pill" style="cursor: pointer; background: transparent; color: #7FDBFF; border: 1px solid #7FDBFF;">📷 Change Profile Picture</label>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 25px;">
+            <img id="settings-pfp-preview" src="PutMeOnMascot.png" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #7FDBFF; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
+            <button id="change-pfp-btn" type="button" class="nav-pill" style="background: transparent; color: #7FDBFF; border: 1px solid #7FDBFF; cursor: pointer;">Change Profile Picture</button>
             <input type="file" id="pfp-file-input" accept="image/*" style="display: none;">
         </div>
 
@@ -56,42 +56,33 @@
             <label style="color: #a0aec0; font-size: 12px; text-align: left;">Update Password</label>
             <input type="password" id="settings-password" placeholder="New Password" style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
 
-            <button type="submit" style="padding: 12px; font-size: 15px; margin-top: 10px;">Save Profile Changes</button>
+            <button type="submit" style="padding: 12px; font-size: 15px; margin-top: 10px; cursor: pointer;">Save Profile Changes</button>
         </form>
 
-        <hr style="width: 100%; margin: 30px 0;">
+        <hr style="width: 100%; margin: 30px 0; border-color: rgba(255,255,255,0.1);">
 
-        <h2 style="color: #b18cff; margin-bottom: 20px;">🎧 Linked Music Services</h2>
+        <h2 style="color: #b18cff; margin-bottom: 20px;">Linked Music Services</h2>
         
         <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 14px 20px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.219.359-.687.473-1.047.254-2.871-1.755-6.486-2.152-10.743-1.18-.407.093-.815-.162-.908-.569-.093-.408.162-.816.569-.909 4.658-1.065 8.653-.615 11.875 1.357.36.219.474.688.254 1.047zm1.467-3.265c-.276.449-.861.593-1.31.317-3.286-2.018-8.297-2.604-12.186-1.424-.502.153-1.031-.132-1.184-.634-.153-.502.132-1.031.634-1.184 4.437-1.347 9.949-.696 13.729 1.626.449.277.593.861.317 1.305zm.127-3.407C15.178 8.49 8.739 8.275 5.086 9.384c-.612.186-1.258-.166-1.444-.778-.186-.612.166-1.258.778-1.444 4.205-1.277 11.315-1.026 15.827 1.652.551.327.734 1.037.407 1.588-.327.551-1.037.734-1.588.407z"/></svg>
-                    <strong>Spotify</strong>
-                </div>
-                <button id="link-spotify-btn" style="padding: 8px 16px; font-size: 13px;">Link Account</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #1DB954; padding: 14px 20px; border-radius: 12px;">
+                <strong style="color: #000000; font-size: 16px;">Spotify</strong>
+                <button id="link-spotify-btn" type="button" onclick="handleLinkApp('Spotify')" style="padding: 8px 16px; font-size: 13px; background-color: #000000; color: #FFFFFF; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Link Account</button>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 14px 20px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#FA233B"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm3.504 15.688c-.698.817-1.787 1.312-2.889 1.312-1.571 0-2.385-.898-3.568-.898-1.199 0-2.128.878-3.538.878-1.248 0-2.399-.588-3.138-1.638C1.002 13.332 1.942 9.4 4.882 9.4c1.238 0 2.12.788 2.97.788.83 0 1.578-.818 3.018-.818.59 0 2.278.06 3.328 1.588-2.678 1.409-2.228 5.168.488 6.31-.568 1.12-1.348 2.37-2.182 3.42zM13.292 7.72c-.08.01-.16.01-.24.01-1.278 0-2.518-.748-3.168-1.898-.688-1.208-.548-2.638.16-3.83.08-.01.16-.01.24-.01 1.258 0 2.538.748 3.168 1.878.718 1.258.558 2.688-.16 3.85z"/></svg>
-                    <strong>iTunes</strong>
-                </div>
-                <button id="link-itunes-btn" style="padding: 8px 16px; font-size: 13px;">Link Account</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #FA233B; padding: 14px 20px; border-radius: 12px;">
+                <strong style="color: #FFFFFF; font-size: 16px;">iTunes</strong>
+                <button id="link-itunes-btn" type="button" onclick="handleLinkApp('iTunes')" style="padding: 8px 16px; font-size: 13px; background-color: #FFFFFF; color: #FA233B; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Link Account</button>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 14px 20px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#FF0000"><path d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.2c-3.977 0-7.2-3.223-7.2-7.2s3.223-7.2 7.2-7.2 7.2 3.223 7.2 7.2-3.223 7.2-7.2 7.2zm0-11.2c-2.209 0-4 1.791-4 4s1.791 4 4 4 4-1.791 4-4-1.791-4-4-4zm-1.6 5.6V10.4l3.6 1.6-3.6 1.6z"/></svg>
-                    <strong>YouTube Music</strong>
-                </div>
-                <button id="link-youtube-btn" style="padding: 8px 16px; font-size: 13px;">Link Account</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #FF0000; padding: 14px 20px; border-radius: 12px;">
+                <strong style="color: #FFFFFF; font-size: 16px;">YouTube Music</strong>
+                <button id="link-youtube-btn" type="button" onclick="handleLinkApp('YouTube Music')" style="padding: 8px 16px; font-size: 13px; background-color: #FFFFFF; color: #FF0000; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Link Account</button>
             </div>
         </div>
 
-        <hr style="width: 100%; margin: 30px 0;">
+        <hr style="width: 100%; margin: 30px 0; border-color: rgba(255,255,255,0.1);">
 
-        <button onclick="signOutUser()" style="background-color: #ff4136; color: white; padding: 12px 30px; font-size: 16px;">Log Out of Account</button>
+        <button type="button" onclick="signOutUser()" style="background-color: #ff4136; color: white; padding: 12px 30px; font-size: 16px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Log Out of Account</button>
     </div>
 
     <div class="footer">
