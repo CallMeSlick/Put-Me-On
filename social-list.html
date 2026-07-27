@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Community List - Put Me On</title>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="PutMeOnLogo.png">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <ul class="navbar-links">
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">🤖 AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">💬 Messages</a></li>
+            </ul>
+
+            <div class="nav-search-container">
+                <form action="search.html" method="GET" id="search-form">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
+                </form>
+            </div>
+
+            <div class="nav-actions">
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="section-container center-page" style="max-width: 600px;">
+        <h1 id="social-title" style="color: #7FDBFF; margin-bottom: 10px;">Community List</h1>
+        
+        <input type="text" id="social-user-search" placeholder="🔍 Search people or artists..." style="width: 100%; box-sizing: border-box; padding: 12px 18px; border-radius: 20px; border: 1px solid #7FDBFF; background: #0d0e12; color: white; margin-bottom: 20px;">
+
+        <div id="social-accounts-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            </div>
+    </div>
+
+    <div class="footer">
+        <a href="license.html">License & Disclaimer</a> |
+        <a href="about.html">About</a> |
+        <a href="mascot.html">Mascot</a>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
