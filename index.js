@@ -15,7 +15,9 @@ const toggleTheme = () => {
     document.body.classList.toggle("light-mode");
 };
 
-themeButton.addEventListener("click", toggleTheme);
+if (themeButton) {
+    themeButton.addEventListener("click", toggleTheme);
+}
 
 window.addEventListener("DOMContentLoaded", () => {
     detectSystemTheme();
@@ -29,11 +31,11 @@ window.addEventListener("DOMContentLoaded", () => {
 const signButton = document.getElementById("sign-now-button");
 let signatureCount = 3;
 
-// Refactored to accept a person object
 const addSignature = (person) => {
     const signatures = document.querySelector(".signatures");
+    if (!signatures) return;
+    
     const newSignature = document.createElement("p");
-
     newSignature.textContent = "🖊️ " + person.name + " from " + person.hometown + " supports this.";
     signatures.appendChild(newSignature);
 
@@ -47,7 +49,10 @@ const addSignature = (person) => {
 // =========================
 const validateForm = () => {
     let containsErrors = false;
-    const petitionInputs = document.getElementById("sign-petition").elements;
+    const petitionForm = document.getElementById("sign-petition");
+    if (!petitionForm) return;
+
+    const petitionInputs = petitionForm.elements;
 
     for (let i = 0; i < petitionInputs.length; i++) {
         if (petitionInputs[i].value.length < 2) {
@@ -59,13 +64,12 @@ const validateForm = () => {
     }
 
     const email = document.getElementById("email");
-    if (!email.value.includes(".com")) {
+    if (email && !email.value.includes(".com")) {
         email.classList.add("error");
         containsErrors = true;
     }
 
-    if (containsErrors === false) {
-        // Step 1: Refactor to create a person object
+    if (!containsErrors) {
         const person = {
             name: document.getElementById("name").value,
             hometown: document.getElementById("hometown").value,
@@ -82,7 +86,9 @@ const validateForm = () => {
     }
 };
 
-signButton.addEventListener("click", validateForm);
+if (signButton) {
+    signButton.addEventListener("click", validateForm);
+}
 
 
 // =========================
@@ -94,7 +100,6 @@ const modalImg = document.getElementById("modal-img");
 let modalTimeoutId;
 let intervalId;
 
-// Animates image transformation using setInterval
 const animateImage = () => {
     let scale = 1;
     let growing = true;
@@ -107,26 +112,30 @@ const animateImage = () => {
             scale -= 0.03;
             if (scale <= 0.95) growing = true;
         }
-        modalImg.style.transform = `scale(${scale}) rotate(${scale * 8 - 8}deg)`;
+        if (modalImg) {
+            modalImg.style.transform = `scale(${scale}) rotate(${scale * 8 - 8}deg)`;
+        }
     }, 80);
 };
 
-// Opens modal, displays thank you text, and sets automatic timeout
 const toggleModal = (person) => {
+    if (!modal) return;
+    
     const thanksText = document.getElementById("thanks-modal-content");
-    thanksText.textContent = `Thank you so much, ${person.name}!`;
+    if (thanksText) {
+        thanksText.textContent = `Thank you so much, ${person.name}!`;
+    }
 
     modal.style.display = "flex";
     animateImage();
 
-    // Automatically hide modal after 4 seconds
     modalTimeoutId = setTimeout(() => {
         closeModal();
     }, 4000);
 };
 
-// Closes modal and clears running timers
 const closeModal = () => {
+    if (!modal) return;
     modal.style.display = "none";
     clearInterval(intervalId);
     clearTimeout(modalTimeoutId);
