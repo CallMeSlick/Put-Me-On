@@ -14,6 +14,15 @@ window.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("light-mode");
     }
 
+    // --- SMART REDIRECT TRACKER ---
+    // Only save the location if it is NOT an authentication page
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
+
+    if (!isAuthPage) {
+        sessionStorage.setItem("lastContentPage", currentPage);
+    }
+
     checkUserSession();
     checkAuthorPermissions();
     loadAuthorPickData();
@@ -36,7 +45,6 @@ function checkUserSession() {
 
     if (navActions) {
         if (loggedInUser) {
-            // Display current logged in user's username on their profile
             const userDisplayName = document.getElementById("user-display-name");
             if (userDisplayName) {
                 userDisplayName.textContent = `@${loggedInUser}`;
@@ -69,7 +77,6 @@ function signOutUser() {
     window.location.href = "index.html";
 }
 
-
 // ==========================================================================
 // SEARCH BAR
 // ==========================================================================
@@ -84,12 +91,10 @@ if (searchInput) {
     });
 }
 
-
 // ==========================================================================
-// DETAILED AUTHENTICATION ENGINE (WITH ERROR MESSAGES)
+// DETAILED AUTHENTICATION ENGINE (WITH ERROR MESSAGES & SMART REDIRECTS)
 // ==========================================================================
 
-// Helper function to render visible error messages
 function displayAuthError(elementId, message) {
     const errorEl = document.getElementById(elementId);
     if (errorEl) {
@@ -127,7 +132,6 @@ if (signinForm) {
 
             const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
-            // Check if username exists and password matches
             if (!users[username]) {
                 displayAuthError("auth-error", "Error: Username not found. Please check your spelling or Sign Up.");
                 return;
@@ -138,9 +142,10 @@ if (signinForm) {
                 return;
             }
 
-            // Success
+            // Success: Log in & redirect to stored content page
             localStorage.setItem("loggedInUser", username);
-            window.location.href = "profile.html";
+            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
+            window.location.href = returnPage;
 
         } catch (err) {
             displayAuthError("auth-error", "Error: An unexpected authentication error occurred.");
@@ -162,37 +167,34 @@ if (signupForm) {
 
             const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
-            // Error Check 1: Username Taken
             if (users[username]) {
                 displayAuthError("signup-error", `Error: The username '@${username}' is already taken!`);
                 return;
             }
 
-            // Error Check 2: Email Already Linked to Another Account
             const existingEmailUser = Object.keys(users).find(u => users[u].email === email);
             if (existingEmailUser) {
                 displayAuthError("signup-error", "Error: An account is already registered with this Gmail address!");
                 return;
             }
 
-            // Error Check 3: Passwords Do Not Match
             if (pass !== confirmPass) {
                 displayAuthError("signup-error", "Error: Passwords do not match. Please retype password.");
                 return;
             }
 
-            // Error Check 4: Password too short
             if (pass.length < 4) {
                 displayAuthError("signup-error", "Error: Password must be at least 4 characters long.");
                 return;
             }
 
-            // Success: Register User
+            // Success: Register User & redirect to stored content page
             users[username] = { email, pass };
             localStorage.setItem("pmo_users", JSON.stringify(users));
             localStorage.setItem("loggedInUser", username);
 
-            window.location.href = "profile.html";
+            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
+            window.location.href = returnPage;
 
         } catch (err) {
             displayAuthError("signup-error", "Error: Could not complete registration. Please try again.");
@@ -245,7 +247,6 @@ if (resetPasswordForm) {
     });
 }
 
-
 // ==========================================================================
 // PROFILE TABS & STATS
 // ==========================================================================
@@ -276,7 +277,6 @@ function updateProfileStats() {
     if (statFollowing) statFollowing.textContent = following.length;
     if (statArtists) statArtists.textContent = artists.length;
 }
-
 
 // ==========================================================================
 // AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick / @Callmesiick)
@@ -333,7 +333,6 @@ if (authorUpdateForm) {
         alert("Author Pick updated successfully!");
     });
 }
-
 
 // ==========================================================================
 // DYNAMIC SOCIAL FOLLOW LISTS
