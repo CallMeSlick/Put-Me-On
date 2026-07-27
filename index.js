@@ -442,7 +442,7 @@ function switchPlaylistSubTab(serviceName) {
         if (btn) btn.classList.remove("active-sub-tab");
     });
 
-    if (serviceName === 'Spotify') {
+    if (serviceName === 'Spotify Music') {
         if (btnSpotify) btnSpotify.classList.add("active-sub-tab");
         if (titleEl) {
             titleEl.textContent = "Synced Spotify Playlists";
@@ -454,7 +454,7 @@ function switchPlaylistSubTab(serviceName) {
             titleEl.textContent = "Synced Apple Music Playlists";
             titleEl.style.color = "#FA233B";
         }
-    } else if (serviceName === 'YouTube') {
+    } else if (serviceName === 'YouTube Music') {
         if (btnYouTube) btnYouTube.classList.add("active-sub-tab");
         if (titleEl) {
             titleEl.textContent = "Synced YouTube Music Playlists";
