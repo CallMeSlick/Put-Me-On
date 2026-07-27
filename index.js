@@ -445,19 +445,19 @@ function switchPlaylistSubTab(serviceName) {
     if (serviceName === 'Spotify') {
         if (btnSpotify) btnSpotify.classList.add("active-sub-tab");
         if (titleEl) {
-            titleEl.textContent = "🎵 Synced Spotify Playlists";
+            titleEl.textContent = "Synced Spotify Playlists";
             titleEl.style.color = "#1DB954";
         }
     } else if (serviceName === 'Apple Music') {
         if (btnApple) btnApple.classList.add("active-sub-tab");
         if (titleEl) {
-            titleEl.textContent = "🍎 Synced Apple Music Playlists";
+            titleEl.textContent = "Synced Apple Music Playlists";
             titleEl.style.color = "#FA233B";
         }
     } else if (serviceName === 'YouTube') {
         if (btnYouTube) btnYouTube.classList.add("active-sub-tab");
         if (titleEl) {
-            titleEl.textContent = "🔴 Synced YouTube Music Playlists";
+            titleEl.textContent = "Synced YouTube Music Playlists";
             titleEl.style.color = "#FF0000";
         }
     }
