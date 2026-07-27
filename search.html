@@ -32,9 +32,17 @@
         </div>
     </nav>
 
-    <div class="section-container center-page" style="max-width: 750px;">
+    <div class="section-container center-page" style="max-width: 800px;">
         <h1 style="color: #7FDBFF; margin-bottom: 5px;">Search Results</h1>
-        <p id="search-query-label" style="color: #a0aec0; margin-bottom: 25px;">Searching music database...</p>
+        <p id="search-query-label" style="color: #a0aec0; margin-bottom: 20px;">Searching music database...</p>
+
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap;">
+            <button class="sub-tab-bubble active-sub-tab" id="search-filter-all" onclick="filterSearchResults('all')">All</button>
+            <button class="sub-tab-bubble" id="search-filter-songs" onclick="filterSearchResults('songs')">🎵 Songs</button>
+            <button class="sub-tab-bubble" id="search-filter-albums" onclick="filterSearchResults('albums')">💿 Albums</button>
+            <button class="sub-tab-bubble" id="search-filter-artists" onclick="filterSearchResults('artists')">🎤 Artists</button>
+            <button class="sub-tab-bubble" id="search-filter-playlists" onclick="filterSearchResults('playlists')">🎧 Playlists</button>
+        </div>
 
         <div id="search-results-container" style="display: flex; flex-direction: column; gap: 15px; width: 100%;"></div>
     </div>
