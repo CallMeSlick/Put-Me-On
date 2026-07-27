@@ -32,8 +32,8 @@
         </div>
     </nav>
 
-    <div class="section-container center-page" style="max-width: 550px;">
-        <h1 style="color: #7FDBFF; margin-bottom: 20px;">Settings</h1>
+    <div class="section-container center-page" style="max-width: 550px; margin-top: 30px;">
+        <h1 style="color: #7FDBFF; margin-bottom: 20px;">Account Settings</h1>
 
         <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 25px;">
             <img id="settings-pfp-preview" src="PutMeOnMascot.png" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #7FDBFF; box-shadow: 0 8px 25px rgba(0,0,0,0.5);">
@@ -42,6 +42,10 @@
         </div>
 
         <form id="settings-info-form" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            
+            <label style="color: #a0aec0; font-size: 12px; text-align: left;">Username</label>
+            <input type="text" id="settings-username" placeholder="Username" style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;" required>
+
             <div style="display: flex; gap: 10px;">
                 <input type="text" id="settings-firstname" placeholder="First Name" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
                 <input type="text" id="settings-lastname" placeholder="Last Name" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
@@ -56,7 +60,7 @@
             <label style="color: #a0aec0; font-size: 12px; text-align: left;">Update Password</label>
             <input type="password" id="settings-password" placeholder="New Password" style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
 
-            <button type="submit" style="padding: 12px; font-size: 15px; margin-top: 10px; cursor: pointer;">Save Profile Changes</button>
+            <button type="submit" style="padding: 12px; font-size: 15px; margin-top: 10px; cursor: pointer; font-weight: bold; background-color: #7FDBFF; color: #0d0e12; border: none; border-radius: 8px;">Save Profile Changes</button>
         </form>
 
         <hr style="width: 100%; margin: 30px 0; border-color: rgba(255,255,255,0.1);">
@@ -75,8 +79,8 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; background: #FF0000; padding: 14px 20px; border-radius: 12px;">
-                <strong style="color: #FFFFFF; font-size: 16px;">YouTube Music</strong>
-                <button id="link-youtube-btn" type="button" onclick="handleLinkApp('YouTube Music')" style="padding: 8px 16px; font-size: 13px; background-color: #FFFFFF; color: #FF0000; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Link Account</button>
+                <strong style="color: #FFFFFF; font-size: 16px;">YouTube</strong>
+                <button id="link-youtube-btn" type="button" onclick="handleLinkApp('YouTube')" style="padding: 8px 16px; font-size: 13px; background-color: #FFFFFF; color: #FF0000; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Link Account</button>
             </div>
         </div>
 
