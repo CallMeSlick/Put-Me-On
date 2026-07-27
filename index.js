@@ -8,36 +8,11 @@ const toggleTheme = () => {
     localStorage.setItem("theme_preference", isLight ? "light" : "dark");
 };
 
-// Ensure user profile display updates on DOM load
 window.addEventListener("DOMContentLoaded", () => {
-    // 1. Force reload check for persistent session
-    let loggedInUser = localStorage.getItem("loggedInUser");
-    
-    // Auto-fallback default for founder session testing
-    if (!loggedInUser) {
-        loggedInUser = "callmeslick";
-        localStorage.setItem("loggedInUser", "callmeslick");
+    const savedTheme = localStorage.getItem("theme_preference");
+    if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
     }
-
-    // 2. Update display name instantly across all pages
-    const userDisplayName = document.getElementById("user-display-name");
-    if (userDisplayName) {
-        userDisplayName.textContent = `@${loggedInUser}`;
-    }
-
-    // 3. Initialize navbar & permissions
-    checkUserSession();
-    checkAuthorPermissions();
-    loadAuthorPickData();
-    updateProfileStats();
-    
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    const userDisplayName = document.getElementById("user-display-name");
-
-    if (loggedInUser && userDisplayName) {
-        userDisplayName.textContent = `@${loggedInUser}`;
-    }
-});
 
     checkUserSession();
     checkAuthorPermissions();
@@ -51,6 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Update Header Navigation dynamically based on WHO is logged in
 function checkUserSession() {
     const loggedInUser = localStorage.getItem("loggedInUser");
     const navActions = document.querySelector(".nav-actions");
@@ -60,6 +36,7 @@ function checkUserSession() {
 
     if (navActions) {
         if (loggedInUser) {
+            // Display current logged in user's username on their profile
             const userDisplayName = document.getElementById("user-display-name");
             if (userDisplayName) {
                 userDisplayName.textContent = `@${loggedInUser}`;
@@ -68,7 +45,7 @@ function checkUserSession() {
             let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
 
             navActions.innerHTML = `
-                <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 Profile</a>
+                <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 @${loggedInUser}</a>
                 <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">➕ Post</a>
                 <button id="theme-button" class="nav-pill nav-theme">Theme</button>
                 ${settingsGear}
@@ -92,6 +69,7 @@ function signOutUser() {
     window.location.href = "index.html";
 }
 
+
 // ==========================================================================
 // SEARCH BAR
 // ==========================================================================
@@ -106,38 +84,67 @@ if (searchInput) {
     });
 }
 
+
 // ==========================================================================
-// AUTHENTICATION LOGIC (SIGN IN, SIGN UP, FORGOT PASSWORD)
+// DETAILED AUTHENTICATION ENGINE (WITH ERROR MESSAGES)
 // ==========================================================================
+
+// Helper function to render visible error messages
+function displayAuthError(elementId, message) {
+    const errorEl = document.getElementById(elementId);
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.display = "block";
+        errorEl.style.color = "#ff4136";
+        errorEl.style.backgroundColor = "rgba(255, 65, 54, 0.15)";
+        errorEl.style.border = "1px solid #ff4136";
+        errorEl.style.padding = "10px";
+        errorEl.style.borderRadius = "8px";
+        errorEl.style.marginBottom = "15px";
+        errorEl.style.fontWeight = "bold";
+    } else {
+        alert(message);
+    }
+}
 
 // 1. SIGN IN
 const signinForm = document.getElementById("signin-form");
 if (signinForm) {
     signinForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const usernameInput = document.getElementById("signin-username");
-        const passwordInput = document.getElementById("signin-password");
-        const errorEl = document.getElementById("auth-error");
+        
+        try {
+            const usernameInput = document.getElementById("signin-username");
+            const passwordInput = document.getElementById("signin-password");
 
-        if (!usernameInput || !passwordInput) return;
-
-        const username = usernameInput.value.trim().toLowerCase();
-        const pass = passwordInput.value;
-
-        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-
-        if (!users[username] || users[username].pass !== pass) {
-            if (errorEl) {
-                errorEl.textContent = "Error: Invalid username or password!";
-                errorEl.style.display = "block";
-            } else {
-                alert("Invalid username or password!");
+            if (!usernameInput || !passwordInput) {
+                displayAuthError("auth-error", "Error: Input fields missing. Please refresh.");
+                return;
             }
-            return;
-        }
 
-        localStorage.setItem("loggedInUser", username);
-        window.location.href = "profile.html";
+            const username = usernameInput.value.trim().toLowerCase();
+            const pass = passwordInput.value;
+
+            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+            // Check if username exists and password matches
+            if (!users[username]) {
+                displayAuthError("auth-error", "Error: Username not found. Please check your spelling or Sign Up.");
+                return;
+            }
+
+            if (users[username].pass !== pass) {
+                displayAuthError("auth-error", "Error: Incorrect password. Please try again.");
+                return;
+            }
+
+            // Success
+            localStorage.setItem("loggedInUser", username);
+            window.location.href = "profile.html";
+
+        } catch (err) {
+            displayAuthError("auth-error", "Error: An unexpected authentication error occurred.");
+        }
     });
 }
 
@@ -146,36 +153,50 @@ const signupForm = document.getElementById("signup-form");
 if (signupForm) {
     signupForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const username = document.getElementById("signup-username").value.trim().toLowerCase();
-        const email = document.getElementById("signup-email").value.trim();
-        const pass = document.getElementById("signup-password").value;
-        const confirmPass = document.getElementById("signup-password-confirm").value;
-        const errorEl = document.getElementById("signup-error");
 
-        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+        try {
+            const username = document.getElementById("signup-username").value.trim().toLowerCase();
+            const email = document.getElementById("signup-email").value.trim().toLowerCase();
+            const pass = document.getElementById("signup-password").value;
+            const confirmPass = document.getElementById("signup-password-confirm").value;
 
-        if (users[username]) {
-            if (errorEl) {
-                errorEl.textContent = "Error: Username already taken!";
-                errorEl.style.display = "block";
+            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+            // Error Check 1: Username Taken
+            if (users[username]) {
+                displayAuthError("signup-error", `Error: The username '@${username}' is already taken!`);
+                return;
             }
-            return;
-        }
 
-        if (pass !== confirmPass) {
-            if (errorEl) {
-                errorEl.textContent = "Error: Passwords do not match!";
-                errorEl.style.display = "block";
+            // Error Check 2: Email Already Linked to Another Account
+            const existingEmailUser = Object.keys(users).find(u => users[u].email === email);
+            if (existingEmailUser) {
+                displayAuthError("signup-error", "Error: An account is already registered with this Gmail address!");
+                return;
             }
-            return;
+
+            // Error Check 3: Passwords Do Not Match
+            if (pass !== confirmPass) {
+                displayAuthError("signup-error", "Error: Passwords do not match. Please retype password.");
+                return;
+            }
+
+            // Error Check 4: Password too short
+            if (pass.length < 4) {
+                displayAuthError("signup-error", "Error: Password must be at least 4 characters long.");
+                return;
+            }
+
+            // Success: Register User
+            users[username] = { email, pass };
+            localStorage.setItem("pmo_users", JSON.stringify(users));
+            localStorage.setItem("loggedInUser", username);
+
+            window.location.href = "profile.html";
+
+        } catch (err) {
+            displayAuthError("signup-error", "Error: Could not complete registration. Please try again.");
         }
-
-        users[username] = { email, pass };
-        localStorage.setItem("pmo_users", JSON.stringify(users));
-        localStorage.setItem("loggedInUser", username);
-
-        alert("Account created successfully! Redirecting to profile...");
-        window.location.href = "profile.html";
     });
 }
 
@@ -186,17 +207,13 @@ let resetUsername = null;
 if (forgotEmailForm) {
     forgotEmailForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const email = document.getElementById("forgot-email").value.trim();
-        const errorEl = document.getElementById("forgot-error");
+        const email = document.getElementById("forgot-email").value.trim().toLowerCase();
         const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
         resetUsername = Object.keys(users).find(u => users[u].email === email);
 
         if (!resetUsername) {
-            if (errorEl) {
-                errorEl.textContent = "Error: Email address not found!";
-                errorEl.style.display = "block";
-            }
+            displayAuthError("forgot-error", "Error: No account found registered to that Gmail address.");
             return;
         }
 
@@ -211,13 +228,9 @@ if (resetPasswordForm) {
         e.preventDefault();
         const newPass = document.getElementById("new-password").value;
         const confirmPass = document.getElementById("confirm-new-password").value;
-        const errorEl = document.getElementById("reset-error");
 
         if (newPass !== confirmPass) {
-            if (errorEl) {
-                errorEl.textContent = "Error: Passwords do not match!";
-                errorEl.style.display = "block";
-            }
+            displayAuthError("reset-error", "Error: Passwords do not match!");
             return;
         }
 
@@ -231,6 +244,7 @@ if (resetPasswordForm) {
         window.location.href = "signin.html";
     });
 }
+
 
 // ==========================================================================
 // PROFILE TABS & STATS
@@ -262,6 +276,7 @@ function updateProfileStats() {
     if (statFollowing) statFollowing.textContent = following.length;
     if (statArtists) statArtists.textContent = artists.length;
 }
+
 
 // ==========================================================================
 // AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick / @Callmesiick)
@@ -318,6 +333,7 @@ if (authorUpdateForm) {
         alert("Author Pick updated successfully!");
     });
 }
+
 
 // ==========================================================================
 // DYNAMIC SOCIAL FOLLOW LISTS
@@ -383,4 +399,28 @@ function renderSocialList(filterText, viewType) {
             </div>
             <button class="nav-pill" onclick="toggleFollowUser('${item.username}', this)" style="background-color: ${isFollowing ? '#ff4136' : '#7FDBFF'}; color: ${isFollowing ? 'white' : 'black'}; font-size: 16px; padding: 6px 16px;">
                 ${isFollowing ? '-' : '+'}
-            </
+            </button>
+        `;
+
+        listContainer.appendChild(card);
+    });
+}
+
+function toggleFollowUser(username, btnEl) {
+    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
+
+    if (followingList.includes(username)) {
+        followingList = followingList.filter(u => u !== username);
+        btnEl.textContent = "+";
+        btnEl.style.backgroundColor = "#7FDBFF";
+        btnEl.style.color = "black";
+    } else {
+        followingList.push(username);
+        btnEl.textContent = "-";
+        btnEl.style.backgroundColor = "#ff4136";
+        btnEl.style.color = "white";
+    }
+
+    localStorage.setItem("following_list", JSON.stringify(followingList));
+    updateProfileStats();
+}
