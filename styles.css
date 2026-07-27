@@ -565,3 +565,45 @@ body.light-mode .footer {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   SEARCH RESULT CARDS & HOVER EFFECTS
+   ========================================================================== */
+
+.search-result-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #161922;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(127, 219, 255, 0.2);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+}
+
+.search-result-card:hover {
+    background: rgba(127, 219, 255, 0.08);
+    border-color: #7FDBFF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.search-result-card img {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.search-result-card strong {
+    color: #f3f4f6;
+    font-size: 16px;
+}
+
+.search-result-card small {
+    color: #a0aec0;
+    font-size: 13px;
+}
