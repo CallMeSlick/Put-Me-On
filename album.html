@@ -12,9 +12,9 @@
     <nav>
         <div class="nav-container">
             <ul class="navbar-links">
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#mascot">Mascot</a></li>
-                <li><a href="index.html#future">AI Features</a></li>
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">Messages</a></li>
             </ul>
 
             <div class="nav-search-container">
@@ -24,8 +24,10 @@
             </div>
 
             <div class="nav-actions">
-                <a href="index.html#post" class="nav-post-btn">➕ Post</a>
-                <button id="theme-button">Toggle Theme</button>
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
             </div>
         </div>
     </nav>
@@ -40,26 +42,29 @@
             <h1 id="album-title-text" style="font-size: 40px; margin: 10px 0 0 0;"></h1>
             <h3 id="album-artist-name" style="color: #7FDBFF; font-size: 22px; margin-top: 5px;"></h3>
             <p id="album-meta-info" style="color: #a0aec0; margin: 0;"></p>
+
+            <div style="display: flex; gap: 15px; margin-top: 15px;">
+                <button id="btn-album-songs" onclick="switchAlbumTab('songs')" class="sub-tab-bubble active-sub-tab" style="background-color: #7FDBFF; color: #0d0e12; font-weight: bold; padding: 8px 20px; border-radius: 20px; border: none; cursor: pointer;">Songs</button>
+                <button id="btn-album-comments" onclick="switchAlbumTab('comments')" class="sub-tab-bubble" style="background-color: rgba(255,255,255,0.1); color: white; font-weight: bold; padding: 8px 20px; border-radius: 20px; border: none; cursor: pointer;">Comments & Posts</button>
+            </div>
         </div>
     </div>
 
     <div id="album-content-container" style="display: none; max-width: 900px; margin: 20px auto;">
         
-        <div class="section-container" style="margin-bottom: 30px;">
+        <div id="album-tab-songs" class="section-container" style="display: block; margin-bottom: 30px;">
             <h2 style="margin-top: 0; color: #b18cff;">🎶 Album Tracklist</h2>
-            <div id="album-tracklist" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left;">
-                </div>
+            <div id="album-tracklist" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left;"></div>
         </div>
 
-        <div class="section-container">
+        <div id="album-tab-comments" class="section-container" style="display: none;">
             <h2 style="margin-top: 0; color: #7FDBFF;">⭐ Album Reviews & Discussions</h2>
             <div id="album-comments-list" style="text-align: left; margin: 20px 0;">
-                <p class="no-album-comments" style="color: #a0aec0; font-style: italic;">No reviews for this album yet. What rating would you give this project?</p>
+                <p class="no-album-comments" style="color: #a0aec0; font-style: italic;">No reviews for this album yet. Share your thoughts below!</p>
             </div>
 
             <form id="album-comment-form" style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: auto;">
-                <input type="text" id="album-user" placeholder="Your Username" style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
-                <textarea id="album-review-text" placeholder="Share your review or favorite tracks from this album..." rows="3" style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white; resize: vertical;"></textarea>
+                <textarea id="album-review-text" placeholder="Share your review or favorite tracks from this album..." rows="3" style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white; resize: vertical;" required></textarea>
                 <button type="submit" style="align-self: center; padding: 10px 24px;">Submit Review</button>
             </form>
         </div>
