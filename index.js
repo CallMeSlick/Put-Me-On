@@ -424,3 +424,45 @@ function toggleFollowUser(username, btnEl) {
     localStorage.setItem("following_list", JSON.stringify(followingList));
     updateProfileStats();
 }
+
+// ==========================================================================
+// PLAYLIST SUB-TAB SWITCHER & DYNAMIC PROMPTS
+// ==========================================================================
+
+function switchPlaylistSubTab(serviceName) {
+    const titleEl = document.getElementById("playlist-service-title");
+    const promptEl = document.getElementById("playlist-connect-prompt");
+
+    const btnSpotify = document.getElementById("sub-btn-spotify");
+    const btnApple = document.getElementById("sub-btn-apple");
+    const btnYouTube = document.getElementById("sub-btn-youtube");
+
+    // Reset active opacity styling on buttons
+    [btnSpotify, btnApple, btnYouTube].forEach(btn => {
+        if (btn) btn.classList.remove("active-sub-tab");
+    });
+
+    if (serviceName === 'Spotify') {
+        if (btnSpotify) btnSpotify.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "🎵 Synced Spotify Playlists";
+            titleEl.style.color = "#1DB954";
+        }
+    } else if (serviceName === 'Apple Music') {
+        if (btnApple) btnApple.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "🍎 Synced Apple Music Playlists";
+            titleEl.style.color = "#FA233B";
+        }
+    } else if (serviceName === 'YouTube') {
+        if (btnYouTube) btnYouTube.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "🔴 Synced YouTube Music Playlists";
+            titleEl.style.color = "#FF0000";
+        }
+    }
+
+    if (promptEl) {
+        promptEl.textContent = `Connect your ${serviceName} account in Settings to view your public and private playlists here! Your public playlists can be viewed by others, while your private playlists are only viewed by those you're shared it with.`;
+    }
+}
