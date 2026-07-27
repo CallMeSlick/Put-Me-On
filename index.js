@@ -10,6 +10,27 @@ const toggleTheme = () => {
 
 // Ensure user profile display updates on DOM load
 window.addEventListener("DOMContentLoaded", () => {
+    // 1. Force reload check for persistent session
+    let loggedInUser = localStorage.getItem("loggedInUser");
+    
+    // Auto-fallback default for founder session testing
+    if (!loggedInUser) {
+        loggedInUser = "callmeslick";
+        localStorage.setItem("loggedInUser", "callmeslick");
+    }
+
+    // 2. Update display name instantly across all pages
+    const userDisplayName = document.getElementById("user-display-name");
+    if (userDisplayName) {
+        userDisplayName.textContent = `@${loggedInUser}`;
+    }
+
+    // 3. Initialize navbar & permissions
+    checkUserSession();
+    checkAuthorPermissions();
+    loadAuthorPickData();
+    updateProfileStats();
+    
     const loggedInUser = localStorage.getItem("loggedInUser");
     const userDisplayName = document.getElementById("user-display-name");
 
