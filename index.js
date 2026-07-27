@@ -466,3 +466,81 @@ function switchPlaylistSubTab(serviceName) {
         promptEl.textContent = `Connect your ${serviceName} account in Settings to view your public and private playlists here! Your public playlists can be viewed by others, while your private playlists are only viewed by those you're shared it with.`;
     }
 }
+
+// ==========================================================================
+// SEARCH RESULTS ENGINE
+// ==========================================================================
+
+window.addEventListener("DOMContentLoaded", () => {
+    initSearchEngine();
+});
+
+// Sample Spotify catalog search database
+const mockMusicDatabase = [
+    { id: "1", title: "Less Than Zero", artist: "The Weeknd", album: "Dawn FM", cover: "PutMeOnLogo.png", genre: "Synth-Pop" },
+    { id: "2", title: "Lessons", artist: "Eric Church", album: "Desperate Man", cover: "PutMeOnMascot.png", genre: "Country" },
+    { id: "3", title: "Less Like Me", artist: "Zach Williams", album: "Rescue Story", cover: "PutMeOnMascot.png", genre: "Christian" },
+    { id: "4", title: "Blinding Lights", artist: "The Weeknd", album: "After Hours", cover: "PutMeOnLogo.png", genre: "Synth-Pop" },
+    { id: "5", title: "Starboy", artist: "The Weeknd", album: "Starboy", cover: "PutMeOnLogo.png", genre: "R&B / Pop" },
+    { id: "6", title: "Kill Bill", artist: "SZA", album: "SOS", cover: "PutMeOnMascot.png", genre: "R&B" }
+];
+
+function initSearchEngine() {
+    const resultsContainer = document.getElementById("search-results-container");
+    const labelEl = document.getElementById("search-query-label");
+
+    if (!resultsContainer) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = (urlParams.get("query") || "").trim().toLowerCase();
+
+    if (!query) {
+        if (labelEl) labelEl.textContent = "Please enter a song name, artist, or vibe in the search bar above.";
+        return;
+    }
+
+    if (labelEl) {
+        labelEl.textContent = `Showing results for "${query}"`;
+    }
+
+    // Filter database for matching titles, artists, or genres
+    const matches = mockMusicDatabase.filter(track => 
+        track.title.toLowerCase().includes(query) ||
+        track.artist.toLowerCase().includes(query) ||
+        track.album.toLowerCase().includes(query) ||
+        track.genre.toLowerCase().includes(query)
+    );
+
+    resultsContainer.innerHTML = "";
+
+    if (matches.length === 0) {
+        resultsContainer.innerHTML = `
+            <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <p style="color: #a0aec0; margin: 0;">No tracks found matching "${query}". Try searching for another artist or title!</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Render result cards
+    matches.forEach(track => {
+        const card = document.createElement("div");
+        card.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2); text-align: left;";
+
+        card.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="${track.cover}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                <div>
+                    <strong style="color: #7FDBFF; font-size: 16px;">${track.title}</strong><br>
+                    <span style="color: white; font-size: 13px;">${track.artist}</span> • <small style="color: #a0aec0;">${track.album}</small>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="nav-pill" onclick="alert('Added ${track.title} to your Liked Songs!')" style="background: transparent; color: #7FDBFF; border: 1px solid #7FDBFF; font-size: 12px;">❤️ Like</button>
+                <button class="nav-pill" onclick="window.location.href='index.html#post'" style="background: #b18cff; color: #0d0e12; font-size: 12px;">➕ Recommend</button>
+            </div>
+        `;
+
+        resultsContainer.appendChild(card);
+    });
+}
