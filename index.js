@@ -28,9 +28,6 @@ window.addEventListener("DOMContentLoaded", () => {
 function checkUserSession() {
     const loggedInUser = localStorage.getItem("loggedInUser");
     const navActions = document.querySelector(".nav-actions");
-    const currentPage = window.location.pathname.split("/").pop();
-
-    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
 
     if (loggedInUser && navActions) {
         const userDisplayName = document.getElementById("user-display-name");
@@ -38,12 +35,10 @@ function checkUserSession() {
             userDisplayName.textContent = `@${loggedInUser}`;
         }
 
-        let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
-
         navActions.innerHTML = `
             <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 Profile</a>
             <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">➕ Post</a>
-            ${settingsGear}
+            <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
             <button id="theme-button" class="nav-pill nav-theme">Theme</button>
         `;
 
