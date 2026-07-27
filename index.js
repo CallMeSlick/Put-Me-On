@@ -591,3 +591,40 @@ function setupAlbumComments() {
         }
     });
 }
+
+// =========================
+// PROFILE TABS & TRY-OUT BINS (profile.html)
+// =========================
+function switchTab(tabName) {
+    const contents = document.querySelectorAll(".profile-tab-content");
+    const buttons = document.querySelectorAll(".profile-tab-btn");
+
+    contents.forEach(content => content.style.display = "none");
+    buttons.forEach(btn => btn.classList.remove("active-tab"));
+
+    const targetContent = document.getElementById(`tab-${tabName}`);
+    if (targetContent) {
+        targetContent.style.display = "block";
+    }
+}
+
+// Simple Try-Out Folder Creator
+document.addEventListener("DOMContentLoaded", () => {
+    const createBinBtn = document.getElementById("create-bin-btn");
+    const tryoutsGrid = document.getElementById("tryouts-grid");
+
+    if (createBinBtn && tryoutsGrid) {
+        createBinBtn.addEventListener("click", () => {
+            const folderName = prompt("Enter a name for your Try-Out Folder (e.g., 'Late Night Vibes to Test'):");
+            if (folderName && folderName.trim() !== "") {
+                const folderCard = document.createElement("div");
+                folderCard.style.cssText = "background: #161922; border: 1px solid rgba(177,140,255,0.4); border-radius: 12px; padding: 20px; text-align: center;";
+                folderCard.innerHTML = `
+                    <h3 style="margin: 0; color: #b18cff;">📁 ${folderName}</h3>
+                    <p style="color: #a0aec0; font-size: 13px; margin: 8px 0 0 0;">0 Tracks Saved</p>
+                `;
+                tryoutsGrid.appendChild(folderCard);
+            }
+        });
+    }
+});
