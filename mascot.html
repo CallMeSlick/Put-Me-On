@@ -27,6 +27,7 @@
                 <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
                 <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
                 <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
             </div>
         </div>
     </nav>
@@ -37,19 +38,35 @@
         <p>Our mascot represents the music lover inside all of us! Always tuned in and ready to put you on to the best hidden gems, classic albums, and trending tracks.</p>
     </div>
 
-    <div class="song-card center-page" style="margin-top: 30px;">
+    <div class="song-card center-page" style="margin-top: 30px; text-align: center;">
         <h2 style="margin-top: 0; color: #7FDBFF;">⭐ Song Recommended by the Author</h2>
-        <h3>Recommended by: Christian</h3>
-        <p><strong>Song:</strong> Less Than Zero</p>
-        <p><strong>Artist:</strong> The Weeknd</p>
-        <p><strong>Album:</strong> Dawn FM</p>
-        <p><strong>Genre:</strong> Synth-Pop / R&B</p>
-        <p>
-            Less Than Zero combines emotional lyrics with uplifting production,
-            creating one of the standout tracks from Dawn FM. The song captures
-            feelings of regret, self-reflection, and growth while remaining
-            incredibly catchy and replayable.
-        </p>
+        <h3 style="color: #b18cff;">Recommended by: Christian (@CallMeSlick)</h3>
+
+        <div id="author-pick-display">
+            <p><strong>Song:</strong> <span id="author-song-title">Less Than Zero</span></p>
+            <p><strong>Artist:</strong> <span id="author-artist-name">The Weeknd</span></p>
+            <p><strong>Album:</strong> <span id="author-album-name">Dawn FM</span></p>
+            <p><strong>Genre:</strong> <span id="author-genre-name">Synth-Pop / R&B</span></p>
+            <p id="author-description-text" style="max-width: 600px; margin: auto; font-style: italic;">
+                Less Than Zero combines emotional lyrics with uplifting production,
+                creating one of the standout tracks from Dawn FM. The song captures
+                feelings of regret, self-reflection, and growth while remaining
+                incredibly catchy and replayable.
+            </p>
+        </div>
+
+        <div id="author-edit-controls" style="display: none; margin-top: 20px;">
+            <button id="toggle-author-edit-btn" onclick="toggleAuthorForm()" style="background-color: #b18cff; color: #0d0e12; padding: 8px 18px; font-size: 13px;">✏️ Update Author Pick</button>
+
+            <form id="author-update-form" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <input type="text" id="edit-song-title" placeholder="Song Title" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="text" id="edit-artist-name" placeholder="Artist Name" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="text" id="edit-album-name" placeholder="Album Name" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="text" id="edit-genre-name" placeholder="Genre" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <textarea id="edit-description" placeholder="Why do you recommend this track?" rows="3" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white; resize: vertical;"></textarea>
+                <button type="submit" style="align-self: center; margin-top: 5px;">Save & Publish Pick</button>
+            </form>
+        </div>
     </div>
 
     <div class="footer">
