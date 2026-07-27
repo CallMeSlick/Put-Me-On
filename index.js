@@ -188,3 +188,98 @@ const reveal = () => {
 };
 
 window.addEventListener("scroll", reveal);
+
+// =========================
+// SPOTIFY LIVE SEARCH UI
+// =========================
+const searchInput = document.getElementById("music-search");
+const searchContainer = document.querySelector(".nav-search-container");
+
+// Create dropdown element dynamically
+let dropdown = document.createElement("div");
+dropdown.id = "search-dropdown";
+dropdown.className = "search-dropdown";
+if (searchContainer) {
+    searchContainer.appendChild(dropdown);
+}
+
+// Function to fetch tracks from Spotify (using Client Credentials flow)
+async function fetchSpotifyTracks(query) {
+    if (!query || query.trim().length < 2) {
+        dropdown.style.display = "none";
+        return;
+    }
+
+    try {
+        // Fetch token from serverless endpoint / Vercel env variable setup
+        const tokenResponse = await fetch("/api/spotify-token");
+        const { token } = await tokenResponse.json();
+
+        if (!token) return;
+
+        const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+        renderSearchResults(data.tracks.items);
+    } catch (error) {
+        console.error("Spotify search error:", error);
+    }
+}
+
+// Render search results inside dropdown
+function renderSearchResults(tracks) {
+    if (!tracks || tracks.length === 0) {
+        dropdown.style.display = "none";
+        return;
+    }
+
+    dropdown.innerHTML = "";
+    
+    tracks.forEach(track => {
+        const item = document.createElement("div");
+        item.className = "search-item";
+        
+        const img = document.createElement("img");
+        img.src = track.album.images[2]?.url || track.album.images[0]?.url;
+        img.alt = track.name;
+
+        const info = document.createElement("div");
+        info.className = "search-item-info";
+        info.innerHTML = `<strong>${track.name}</strong><br><small>${track.artists[0].name}</small>`;
+
+        item.appendChild(img);
+        item.appendChild(info);
+
+        // When a user clicks a song from the search results
+        item.addEventListener("click", () => {
+            alert(`You selected: ${track.name} by ${track.artists[0].name}!`);
+            dropdown.style.display = "none";
+        });
+
+        dropdown.appendChild(item);
+    });
+
+    dropdown.style.display = "block";
+}
+
+// Attach event listener with a slight debounce
+let debounceTimer;
+if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            fetchSpotifyTracks(e.target.value);
+        }, 300);
+    });
+}
+
+// Close dropdown if user clicks outside of search container
+document.addEventListener("click", (e) => {
+    if (searchContainer && !searchContainer.contains(e.target)) {
+        dropdown.style.display = "none";
+    }
+});
