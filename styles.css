@@ -650,3 +650,224 @@ ul li {
     color: white;
     border-color: #0066cc;
 }
+
+/* ========================= */
+/* MESSAGING & GROUP CHAT STYLES */
+/* ========================= */
+
+.unread-badge {
+    background-color: #ff4136;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 12px;
+    margin-left: 6px;
+}
+
+.chat-app-container {
+    display: flex;
+    max-width: 1100px;
+    height: 75vh;
+    margin: 30px auto;
+    background: #161922;
+    border-radius: 16px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.chat-sidebar {
+    width: 320px;
+    border-right: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    background: rgba(13, 14, 18, 0.6);
+}
+
+.sidebar-header {
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #7FDBFF;
+}
+
+.threads-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.thread-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.thread-card:hover, .thread-card.active-thread {
+    background: rgba(127, 219, 255, 0.12);
+}
+
+.thread-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.group-avatar-icon {
+    background: #b18cff;
+    color: #0d0e12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.thread-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.thread-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.thread-name {
+    color: #f3f4f6;
+    font-size: 14px;
+}
+
+.thread-time {
+    color: #a0aec0;
+    font-size: 11px;
+}
+
+.thread-preview {
+    margin: 3px 0 0 0;
+    padding: 0;
+    font-size: 12px;
+    color: #a0aec0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-window {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #0d0e12;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.3s ease;
+}
+
+.chat-header {
+    padding: 15px 20px;
+    background: rgba(22, 25, 34, 0.95);
+    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    color: #7FDBFF;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message-bubble {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.message-bubble.received {
+    align-self: flex-start;
+    background: #161922;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f3f4f6;
+}
+
+.message-bubble.sent {
+    align-self: flex-end;
+    background: #7FDBFF;
+    color: #0d0e12;
+    font-weight: 500;
+}
+
+.message-sender {
+    display: block;
+    font-size: 10px;
+    opacity: 0.75;
+    margin-bottom: 4px;
+}
+
+.shared-song-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.shared-song-card img {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    border-radius: 4px;
+}
+
+.chat-input-area {
+    padding: 15px;
+    background: rgba(22, 25, 34, 0.95);
+    border-top: 1px solid rgba(127, 219, 255, 0.2);
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-area input {
+    flex-grow: 1;
+    padding: 12px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    background: #0d0e12;
+    color: white;
+    font-size: 14px;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #a0aec0;
+}
