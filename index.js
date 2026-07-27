@@ -723,3 +723,149 @@ function editChatSettings() {
         }
     }
 }
+
+// =========================
+// AUTHENTICATION ENGINE
+// =========================
+
+// Save previous page location before navigating to Sign In/Sign Up
+window.addEventListener("DOMContentLoaded", () => {
+    const currentPage = window.location.pathname.split("/").pop();
+    if (!["signin.html", "signup.html", "forgot-password.html"].includes(currentPage) && currentPage !== "") {
+        sessionStorage.setItem("previousPage", currentPage);
+    }
+    checkUserSession();
+});
+
+// Update navbar depending on if user is signed in
+function checkUserSession() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    const navActions = document.querySelector(".nav-actions");
+
+    if (loggedInUser && navActions) {
+        navActions.innerHTML = `
+            <a href="profile.html" class="nav-post-btn" style="background-color: #7FDBFF; color: black;">👤 @${loggedInUser}</a>
+            <button onclick="signOutUser()" id="theme-button" style="border-color: #ff4136; color: #ff4136;">Sign Out</button>
+        `;
+    }
+}
+
+function signOutUser() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "index.html";
+}
+
+// 1. SIGN UP LOGIC
+const signupForm = document.getElementById("signup-form");
+if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("signup-username").value.trim().toLowerCase();
+        const email = document.getElementById("signup-email").value.trim();
+        const pass = document.getElementById("signup-password").value;
+        const confirmPass = document.getElementById("signup-password-confirm").value;
+        const errorEl = document.getElementById("signup-error");
+
+        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+        // Check unique username
+        if (users[username]) {
+            errorEl.textContent = "Error: That username is already taken! Please pick another.";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Passwords match check
+        if (pass !== confirmPass) {
+            errorEl.textContent = "Error: Passwords do not match!";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Save account
+        users[username] = { email, pass };
+        localStorage.setItem("pmo_users", JSON.stringify(users));
+        localStorage.setItem("loggedInUser", username);
+
+        // Redirect back to previous page (or home if came from sign-in)
+        const prev = sessionStorage.getItem("previousPage") || "index.html";
+        window.location.href = prev === "signin.html" ? "index.html" : prev;
+    });
+}
+
+// 2. SIGN IN LOGIC
+const signinForm = document.getElementById("signin-form");
+if (signinForm) {
+    signinForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("signin-username").value.trim().toLowerCase();
+        const pass = document.getElementById("signin-password").value;
+        const errorEl = document.getElementById("auth-error");
+
+        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+        if (!users[username] || users[username].pass !== pass) {
+            errorEl.textContent = "Error: Invalid username or password!";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Sign in successful
+        localStorage.setItem("loggedInUser", username);
+        const prev = sessionStorage.getItem("previousPage") || "index.html";
+        window.location.href = prev === "signin.html" ? "index.html" : prev;
+    });
+}
+
+// 3. FORGOT PASSWORD LOGIC
+const forgotEmailForm = document.getElementById("forgot-email-form");
+let resetUsername = null;
+
+if (forgotEmailForm) {
+    forgotEmailForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("forgot-email").value.trim();
+        const errorEl = document.getElementById("forgot-error");
+        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+        // Find user by email
+        resetUsername = Object.keys(users).find(u => users[u].email === email);
+
+        if (!resetUsername) {
+            errorEl.textContent = "Error: No account found with that email address!";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Simulate sending email & show password reset step
+        document.getElementById("forgot-step-1").style.display = "none";
+        document.getElementById("forgot-step-2").style.display = "block";
+    });
+}
+
+const resetPasswordForm = document.getElementById("reset-password-form");
+if (resetPasswordForm) {
+    resetPasswordForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newPass = document.getElementById("new-password").value;
+        const confirmPass = document.getElementById("confirm-new-password").value;
+        const errorEl = document.getElementById("reset-error");
+
+        if (newPass !== confirmPass) {
+            errorEl.textContent = "Error: Passwords do not match!";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Update password in database
+        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+        if (resetUsername && users[resetUsername]) {
+            users[resetUsername].pass = newPass;
+            localStorage.setItem("pmo_users", JSON.stringify(users));
+        }
+
+        // Redirect to Sign In page
+        alert("Password updated successfully! Please sign in with your new password.");
+        window.location.href = "signin.html";
+    });
+}
