@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sign Up - Put Me On</title>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="PutMeOnLogo.png">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <ul class="navbar-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="mascot.html">Mascot</a></li>
+                <li><a href="ai-matcher.html">AI Matcher</a></li>
+                <li><a href="license.html">License</a></li>
+            </ul>
+
+            <div class="nav-search-container">
+                <form action="search.html" method="GET" id="search-form">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
+                </form>
+            </div>
+
+            <div class="nav-actions">
+                <a href="signin.html" class="nav-post-btn">Sign In</a>
+                <a href="signup.html" class="nav-post-btn" style="background-color: #7FDBFF;">Sign Up</a>
+                <button id="theme-button">Toggle Theme</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="section-container center-page" style="max-width: 500px;">
+        <h1 style="color: #7FDBFF; margin-bottom: 10px;">Create Account</h1>
+        <p style="color: #a0aec0; margin-bottom: 25px;">Join the Put Me On community!</p>
+
+        <p id="signup-error" style="color: #ff4136; display: none; font-weight: bold; margin-bottom: 15px;"></p>
+
+        <form id="signup-form" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="signup-firstname" placeholder="First Name" required style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="text" id="signup-lastname" placeholder="Last Name" required style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+            </div>
+            
+            <input type="text" id="signup-username" placeholder="Choose Unique Username" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+            
+            <label style="color: #a0aec0; font-size: 12px; text-align: left; margin-top: 4px;">Birthday</label>
+            <input type="date" id="signup-birthday" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+            
+            <input type="email" id="signup-email" placeholder="Gmail Address" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+            
+            <input type="password" id="signup-password" placeholder="Create Password" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+            <input type="password" id="signup-password-confirm" placeholder="Confirm Password" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+
+            <button type="submit" style="padding: 12px; font-size: 16px; margin-top: 10px;">Sign Up</button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 14px; color: #a0aec0;">
+            <p>Already have an account? <a href="signin.html" style="color: #7FDBFF; font-weight: bold;">Sign In Here</a></p>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
