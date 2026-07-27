@@ -535,3 +535,79 @@ ul li {
     color: #1e293b;
     border: 2px solid #0066cc;
 }
+
+/* ========================= */
+/* SPOTIFY DROPDOWN SEARCH RESULTS */
+/* ========================= */
+
+.nav-search-container {
+    position: relative;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    right: 0;
+    background-color: #161922;
+    border: 1px solid rgba(127, 219, 255, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1001;
+    text-align: left;
+}
+
+.search-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background-color: rgba(127, 219, 255, 0.15);
+}
+
+.search-item img {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    margin-right: 12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    object-fit: cover;
+}
+
+.search-item-info strong {
+    color: #f3f4f6;
+    font-size: 14px;
+}
+
+.search-item-info small {
+    color: #a0aec0;
+    font-size: 12px;
+}
+
+/* Light Mode Support */
+.light-mode .search-dropdown {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.light-mode .search-item-info strong {
+    color: #0f172a;
+}
+
+.light-mode .search-item:hover {
+    background-color: rgba(0, 102, 204, 0.1);
+}
