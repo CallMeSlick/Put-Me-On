@@ -41,14 +41,10 @@ function checkUserSession() {
 
     if (navActions) {
         if (loggedInUser) {
-            // Retrieve exact stored display name to preserve exact casing (e.g. CallMeSlick)
-            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-            const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
-            const exactDisplayName = (matchedKey && users[matchedKey].displayName) ? users[matchedKey].displayName : loggedInUser;
-
+            // Display exact stored username as written (preserving uppercase/lowercase)
             const userDisplayName = document.getElementById("user-display-name");
             if (userDisplayName) {
-                userDisplayName.textContent = exactDisplayName;
+                userDisplayName.textContent = loggedInUser;
             }
 
             let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
@@ -95,7 +91,7 @@ if (searchInput) {
 
 
 // ==========================================================================
-// AUTHENTICATION ENGINE (CASE-PRESERVING)
+// AUTHENTICATION ENGINE (EXACT CASING PRESERVATION)
 // ==========================================================================
 
 function displayAuthError(elementId, message) {
@@ -149,6 +145,7 @@ if (signinForm) {
                 return;
             }
 
+            // Store exact display name entered during signup
             const preservedName = users[matchedKey].displayName || matchedKey;
             localStorage.setItem("loggedInUser", preservedName);
 
@@ -289,7 +286,7 @@ function updateProfileStats() {
 
 
 // ==========================================================================
-// AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick)
+// AUTHOR PICK ADMIN PERMISSIONS
 // ==========================================================================
 
 function checkAuthorPermissions() {
@@ -437,7 +434,7 @@ function toggleFollowUser(username, btnEl) {
 
 
 // ==========================================================================
-// HIGH-RELEVANCE MULTI-CATEGORY MUSIC SEARCH ENGINE
+// STRICT WORD-PRIORITY MUSIC SEARCH ENGINE
 // ==========================================================================
 
 let currentSearchFilter = "all";
@@ -475,8 +472,7 @@ async function fetchGlobalMusicData(query) {
     const container = document.getElementById("search-results-container");
 
     try {
-        // Expand search limit to 100 to catch deeper title matches
-        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=100&entity=song,album,musicArtist`);
+        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=150&entity=song,album,musicArtist`);
         const data = await response.json();
 
         fetchedSearchResults.songs = [];
@@ -486,30 +482,40 @@ async function fetchGlobalMusicData(query) {
 
         const lowerQuery = query.toLowerCase();
         const addedAlbums = new Set();
-        const addedArtists = new Set();
+        const addedArtists = new Map();
 
         data.results.forEach(item => {
+            // 1. SONGS: MUST have the search term in the song title
             if (item.wrapperType === "track") {
                 const titleLower = (item.trackName || "").toLowerCase();
-                const artistLower = (item.artistName || "").toLowerCase();
 
-                // Assign Priority Rank: 1 = Title matches query word, 2 = Artist matches query word
-                let priorityScore = 2;
                 if (titleLower.includes(lowerQuery)) {
-                    priorityScore = 1;
+                    fetchedSearchResults.songs.push({
+                        id: item.trackId,
+                        title: item.trackName,
+                        artist: item.artistName,
+                        album: item.collectionName,
+                        cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png"
+                    });
                 }
 
-                fetchedSearchResults.songs.push({
-                    id: item.trackId,
-                    title: item.trackName,
-                    artist: item.artistName,
-                    album: item.collectionName,
-                    cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png",
-                    priority: priorityScore
-                });
-
-                // Deduplicate and pull albums from track data
-                if (item.collectionId && !addedAlbums.has(item.collectionId)) {
+                // Collect artists from track data
+                if (item.artistId && !addedArtists.has(item.artistId)) {
+                    const artistNameLower = (item.artistName || "").toLowerCase();
+                    const priorityScore = artistNameLower.includes(lowerQuery) ? 1 : 2; // Priority 1 if name contains word
+                    addedArtists.set(item.artistId, {
+                        id: item.artistId,
+                        name: item.artistName,
+                        genre: item.primaryGenreName || "Artist",
+                        image: "PutMeOnLogo.png",
+                        priority: priorityScore
+                    });
+                }
+            } 
+            // 2. ALBUMS: MUST have the search term in the album title
+            else if (item.wrapperType === "collection" && !addedAlbums.has(item.collectionId)) {
+                const albumLower = (item.collectionName || "").toLowerCase();
+                if (albumLower.includes(lowerQuery)) {
                     addedAlbums.add(item.collectionId);
                     fetchedSearchResults.albums.push({
                         id: item.collectionId,
@@ -519,39 +525,23 @@ async function fetchGlobalMusicData(query) {
                         cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png"
                     });
                 }
-
-                // Deduplicate and pull artists from track data
-                if (item.artistId && !addedArtists.has(item.artistId)) {
-                    addedArtists.add(item.artistId);
-                    fetchedSearchResults.artists.push({
-                        id: item.artistId,
-                        name: item.artistName,
-                        genre: item.primaryGenreName || "Artist",
-                        image: "PutMeOnLogo.png"
-                    });
-                }
-            } else if (item.wrapperType === "collection" && !addedAlbums.has(item.collectionId)) {
-                addedAlbums.add(item.collectionId);
-                fetchedSearchResults.albums.push({
-                    id: item.collectionId,
-                    title: item.collectionName,
-                    artist: item.artistName,
-                    year: item.releaseDate ? new Date(item.releaseDate).getFullYear() : "",
-                    cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png"
-                });
-            } else if (item.wrapperType === "artist" && !addedArtists.has(item.artistId)) {
-                addedArtists.add(item.artistId);
-                fetchedSearchResults.artists.push({
+            } 
+            // 3. ARTISTS
+            else if (item.wrapperType === "artist" && !addedArtists.has(item.artistId)) {
+                const artistNameLower = (item.artistName || "").toLowerCase();
+                const priorityScore = artistNameLower.includes(lowerQuery) ? 1 : 2;
+                addedArtists.set(item.artistId, {
                     id: item.artistId,
                     name: item.artistName,
                     genre: item.primaryGenreName || "Artist",
-                    image: "PutMeOnLogo.png"
+                    image: "PutMeOnLogo.png",
+                    priority: priorityScore
                 });
             }
         });
 
-        // Priority Sort: Title Matches first (Priority 1) before Artist-only matches (Priority 2)
-        fetchedSearchResults.songs.sort((a, b) => a.priority - b.priority);
+        // Convert Artist map to array and sort: Name matches (Priority 1) -> Song/Album related matches (Priority 2)
+        fetchedSearchResults.artists = Array.from(addedArtists.values()).sort((a, b) => a.priority - b.priority);
 
         if (labelEl) {
             labelEl.textContent = `Showing results for "${query}"`;
