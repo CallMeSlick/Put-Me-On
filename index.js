@@ -281,3 +281,169 @@ if (authorForm) {
         alert("Author's Recommendation updated successfully!");
     });
 }
+
+// ==========================================================================
+// AUTHOR PICK EDITING & DYNAMIC SOCIAL FOLLOW LISTS
+// ==========================================================================
+
+window.addEventListener("DOMContentLoaded", () => {
+    checkAuthorPermissions();
+    loadAuthorPickData();
+    updateProfileStats();
+    initSocialListPage();
+});
+
+// Unlock edit controls ONLY for CallMeSlick / Callmesiick
+function checkAuthorPermissions() {
+    const loggedInUser = (localStorage.getItem("loggedInUser") || "").toLowerCase();
+    const editControls = document.getElementById("author-edit-controls");
+
+    if ((loggedInUser === "callmeslick" || loggedInUser === "callmesiick") && editControls) {
+        editControls.style.display = "block";
+    }
+}
+
+function toggleAuthorForm() {
+    const form = document.getElementById("author-update-form");
+    if (form) {
+        form.style.display = form.style.display === "none" ? "flex" : "none";
+    }
+}
+
+function loadAuthorPickData() {
+    const savedPick = JSON.parse(localStorage.getItem("author_custom_pick") || "null");
+    if (savedPick) {
+        const songEl = document.getElementById("author-song-title");
+        const artistEl = document.getElementById("author-artist-name");
+        const albumEl = document.getElementById("author-album-name");
+        const genreEl = document.getElementById("author-genre-name");
+        const descEl = document.getElementById("author-description-text");
+
+        if (songEl) songEl.textContent = savedPick.song;
+        if (artistEl) artistEl.textContent = savedPick.artist;
+        if (albumEl) albumEl.textContent = savedPick.album;
+        if (genreEl) genreEl.textContent = savedPick.genre;
+        if (descEl) descEl.textContent = savedPick.desc;
+    }
+}
+
+const authorForm = document.getElementById("author-update-form");
+if (authorForm) {
+    authorForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const pickData = {
+            song: document.getElementById("edit-song-title").value.trim(),
+            artist: document.getElementById("edit-artist-name").value.trim(),
+            album: document.getElementById("edit-album-name").value.trim(),
+            genre: document.getElementById("edit-genre-name").value.trim(),
+            desc: document.getElementById("edit-description").value.trim()
+        };
+
+        localStorage.setItem("author_custom_pick", JSON.stringify(pickData));
+        loadAuthorPickData();
+        toggleAuthorForm();
+        alert("Author Pick updated successfully!");
+    });
+}
+
+// Stats counter management
+function updateProfileStats() {
+    const following = JSON.parse(localStorage.getItem("following_list") || "[]");
+    const followers = JSON.parse(localStorage.getItem("followers_list") || "[]");
+    const artists = JSON.parse(localStorage.getItem("followed_artists_list") || "[]");
+
+    const statFollowers = document.getElementById("stat-followers");
+    const statFollowing = document.getElementById("stat-following");
+    const statArtists = document.getElementById("stat-artists");
+
+    if (statFollowers) statFollowers.textContent = followers.length;
+    if (statFollowing) statFollowing.textContent = following.length;
+    if (statArtists) statArtists.textContent = artists.length;
+}
+
+// Sample users database for social lists
+const mockCommunityData = [
+    { username: "Alex_NYC", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Jordan_Chi", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Sophia_FL", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Taylor_LA", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "The Weeknd", pfp: "PutMeOnLogo.png", type: "artist" },
+    { username: "Kendrick Lamar", pfp: "PutMeOnLogo.png", type: "artist" },
+    { username: "SZA", pfp: "PutMeOnLogo.png", type: "artist" }
+];
+
+function initSocialListPage() {
+    const listContainer = document.getElementById("social-accounts-list");
+    const searchInput = document.getElementById("social-user-search");
+    const titleEl = document.getElementById("social-title");
+
+    if (!listContainer) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewType = urlParams.get("type") || "following";
+
+    if (titleEl) {
+        if (viewType === "followers") titleEl.textContent = "👥 Followers";
+        else if (viewType === "artists") titleEl.textContent = "🎤 Followed Artists";
+        else titleEl.textContent = "🎧 Following";
+    }
+
+    renderSocialList("", viewType);
+
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            renderSocialList(e.target.value.trim().toLowerCase(), viewType);
+        });
+    }
+}
+
+function renderSocialList(filterText, viewType) {
+    const listContainer = document.getElementById("social-accounts-list");
+    if (!listContainer) return;
+
+    listContainer.innerHTML = "";
+    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
+
+    const filtered = mockCommunityData.filter(item => {
+        const matchesName = item.username.toLowerCase().includes(filterText);
+        if (viewType === "artists") return matchesName && item.type === "artist";
+        return matchesName && item.type === "user";
+    });
+
+    filtered.forEach(item => {
+        const isFollowing = followingList.includes(item.username);
+        const card = document.createElement("div");
+        card.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 12px 18px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);";
+
+        card.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="${item.pfp}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <strong style="color: white; font-size: 15px;">@${item.username}</strong>
+            </div>
+            <button class="nav-pill" onclick="toggleFollowUser('${item.username}', this)" style="background-color: ${isFollowing ? '#ff4136' : '#7FDBFF'}; color: ${isFollowing ? 'white' : 'black'}; font-size: 16px; padding: 6px 16px;">
+                ${isFollowing ? '-' : '+'}
+            </button>
+        `;
+
+        listContainer.appendChild(card);
+    });
+}
+
+function toggleFollowUser(username, btnEl) {
+    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
+
+    if (followingList.includes(username)) {
+        followingList = followingList.filter(u => u !== username);
+        btnEl.textContent = "+";
+        btnEl.style.backgroundColor = "#7FDBFF";
+        btnEl.style.color = "black";
+    } else {
+        followingList.push(username);
+        btnEl.textContent = "-";
+        btnEl.style.backgroundColor = "#ff4136";
+        btnEl.style.color = "white";
+    }
+
+    localStorage.setItem("following_list", JSON.stringify(followingList));
+    updateProfileStats();
+}
