@@ -482,3 +482,112 @@ function setupComments(artistId) {
         }
     });
 }
+
+// =========================
+// ALBUM PAGE LOGIC (album.html)
+// =========================
+window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const albumId = urlParams.get("id");
+
+    if (albumId && document.getElementById("album-profile")) {
+        loadAlbumPage(albumId);
+    }
+});
+
+async function loadAlbumPage(albumId) {
+    const loading = document.getElementById("album-loading");
+    const profile = document.getElementById("album-profile");
+    const container = document.getElementById("album-content-container");
+
+    try {
+        const tokenResponse = await fetch("/api/spotify-token");
+        const tokenData = await tokenResponse.json();
+
+        if (!tokenData.token) {
+            loading.innerHTML = "<h2>Unable to connect to Spotify.</h2>";
+            return;
+        }
+
+        const headers = { 'Authorization': `Bearer ${tokenData.token}` };
+
+        // Fetch Album Details from Spotify
+        const albumRes = await fetch(`http://googleusercontent.com/spotify.com/5${albumId}`, { headers });
+        const album = await albumRes.json();
+
+        document.getElementById("album-cover-img").src = album.images[0]?.url;
+        document.getElementById("album-title-text").textContent = album.name;
+        document.getElementById("album-artist-name").textContent = `By ${album.artists.map(a => a.name).join(", ")}`;
+        document.getElementById("album-meta-info").textContent = `${album.release_date.split('-')[0]} • ${album.total_tracks} Tracks`;
+
+        // Render Tracklist
+        const tracklistContainer = document.getElementById("album-tracklist");
+        tracklistContainer.innerHTML = "";
+
+        album.tracks.items.forEach((track, index) => {
+            const trackRow = document.createElement("div");
+            trackRow.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; cursor: pointer;";
+            
+            // Format track duration
+            const minutes = Math.floor(track.duration_ms / 60000);
+            const seconds = ((track.duration_ms % 60000) / 1000).toFixed(0);
+            const durationFormatted = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            trackRow.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-weight: bold; color: #7FDBFF; width: 25px;">${index + 1}.</span>
+                    <div>
+                        <strong style="color: #f3f4f6; font-size: 15px;">${track.name}</strong>
+                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #a0aec0;">${track.artists.map(a => a.name).join(", ")}</p>
+                    </div>
+                </div>
+                <span style="color: #a0aec0; font-size: 13px;">${durationFormatted}</span>
+            `;
+
+            trackRow.addEventListener("click", () => {
+                window.location.href = `song.html?id=${track.id}`;
+            });
+
+            tracklistContainer.appendChild(trackRow);
+        });
+
+        loading.style.display = "none";
+        profile.style.display = "flex";
+        container.style.display = "block";
+
+        setupAlbumComments();
+
+    } catch (err) {
+        console.error(err);
+        loading.innerHTML = "<h2>Error loading album details.</h2>";
+    }
+}
+
+function setupAlbumComments() {
+    const form = document.getElementById("album-comment-form");
+    const commentsList = document.getElementById("album-comments-list");
+
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const user = document.getElementById("album-user").value.trim();
+        const text = document.getElementById("album-review-text").value.trim();
+
+        if (user && text) {
+            const noComments = commentsList.querySelector(".no-album-comments");
+            if (noComments) noComments.remove();
+
+            const commentCard = document.createElement("div");
+            commentCard.style.cssText = "background: #161922; border-left: 4px solid #7FDBFF; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px;";
+            commentCard.innerHTML = `
+                <strong style="color: #b18cff;">@${user}</strong>
+                <p style="margin: 5px 0 0 0; color: #e2e8f0; padding: 0;">${text}</p>
+            `;
+            commentsList.prepend(commentCard);
+
+            document.getElementById("album-user").value = "";
+            document.getElementById("album-review-text").value = "";
+        }
+    });
+}
