@@ -216,3 +216,68 @@ function switchTab(tabName) {
         targetContent.style.display = "block";
     }
 }
+
+// ==========================================================================
+// AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick ONLY)
+// ==========================================================================
+
+window.addEventListener("DOMContentLoaded", () => {
+    checkAuthorPermissions();
+    loadAuthorPickData();
+});
+
+function checkAuthorPermissions() {
+    const loggedInUser = (localStorage.getItem("loggedInUser") || "").toLowerCase();
+    const editControls = document.getElementById("author-edit-controls");
+
+    // Only allow CallMeSlick to edit the author's pick
+    if (loggedInUser === "callmeslick" && editControls) {
+        editControls.style.display = "block";
+    }
+}
+
+function toggleAuthorForm() {
+    const form = document.getElementById("author-update-form");
+    if (form) {
+        form.style.display = form.style.display === "none" ? "flex" : "none";
+    }
+}
+
+// Load saved Author Pick from localStorage if custom pick exists
+function loadAuthorPickData() {
+    const savedPick = JSON.parse(localStorage.getItem("author_custom_pick") || "null");
+    if (savedPick) {
+        const songEl = document.getElementById("author-song-title");
+        const artistEl = document.getElementById("author-artist-name");
+        const albumEl = document.getElementById("author-album-name");
+        const genreEl = document.getElementById("author-genre-name");
+        const descEl = document.getElementById("author-description-text");
+
+        if (songEl) songEl.textContent = savedPick.song;
+        if (artistEl) artistEl.textContent = savedPick.artist;
+        if (albumEl) albumEl.textContent = savedPick.album;
+        if (genreEl) genreEl.textContent = savedPick.genre;
+        if (descEl) descEl.textContent = savedPick.desc;
+    }
+}
+
+// Handle Author Pick Update Submission
+const authorForm = document.getElementById("author-update-form");
+if (authorForm) {
+    authorForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const pickData = {
+            song: document.getElementById("edit-song-title").value.trim(),
+            artist: document.getElementById("edit-artist-name").value.trim(),
+            album: document.getElementById("edit-album-name").value.trim(),
+            genre: document.getElementById("edit-genre-name").value.trim(),
+            desc: document.getElementById("edit-description").value.trim()
+        };
+
+        localStorage.setItem("author_custom_pick", JSON.stringify(pickData));
+        loadAuthorPickData();
+        toggleAuthorForm();
+        alert("Author's Recommendation updated successfully!");
+    });
+}
