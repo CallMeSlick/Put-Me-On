@@ -611,3 +611,42 @@ ul li {
 .light-mode .search-item:hover {
     background-color: rgba(0, 102, 204, 0.1);
 }
+
+/* ========================= */
+/* PROFILE PAGE TAB STYLES */
+/* ========================= */
+
+.profile-tab-btn {
+    background-color: transparent;
+    color: #a0aec0;
+    border: 1px solid rgba(127, 219, 255, 0.2);
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.profile-tab-btn:hover {
+    color: #f3f4f6;
+    border-color: #7FDBFF;
+}
+
+.profile-tab-btn.active-tab {
+    background-color: #7FDBFF;
+    color: #0d0e12;
+    border-color: #7FDBFF;
+    font-weight: bold;
+}
+
+/* Light Mode Tab Support */
+.light-mode .profile-tab-btn {
+    color: #64748b;
+    border-color: #cbd5e1;
+}
+
+.light-mode .profile-tab-btn.active-tab {
+    background-color: #0066cc;
+    color: white;
+    border-color: #0066cc;
+}
