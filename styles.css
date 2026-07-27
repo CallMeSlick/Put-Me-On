@@ -607,3 +607,39 @@ body.light-mode .footer {
     color: #a0aec0;
     font-size: 13px;
 }
+
+/* ==========================================================================
+   RATING BADGES & DYNAMIC COLORS (RED ➔ ORANGE ➔ YELLOW ➔ BLUE ➔ PURPLE)
+   ========================================================================== */
+
+.rating-circle {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #0d0e12;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.rating-circle.gray {
+    background-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+.album-card-item {
+    background: #161922;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(127, 219, 255, 0.15);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+}
+
+.album-card-item:hover {
+    transform: translateY(-4px);
+    border-color: #b18cff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
