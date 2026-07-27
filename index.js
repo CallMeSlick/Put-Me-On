@@ -11,6 +11,48 @@ let fetchedSearchResults = {
     playlists: []
 };
 
+// ==========================================================================
+// PROFILE PLAYLIST SUB-TAB SWITCHER
+// ==========================================================================
+
+function switchPlaylistSubTab(serviceName) {
+    const titleEl = document.getElementById("playlist-service-title");
+    const promptEl = document.getElementById("playlist-connect-prompt");
+
+    const btnSpotify = document.getElementById("sub-btn-spotify");
+    const btnITunes = document.getElementById("sub-btn-itunes");
+    const btnYouTube = document.getElementById("sub-btn-youtube");
+
+    // Remove active style from all sub buttons
+    [btnSpotify, btnITunes, btnYouTube].forEach(btn => {
+        if (btn) btn.classList.remove("active-sub-tab");
+    });
+
+    if (serviceName === 'Spotify') {
+        if (btnSpotify) btnSpotify.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "Synced Spotify Playlists";
+            titleEl.style.color = "#1DB954";
+        }
+    } else if (serviceName === 'iTunes') {
+        if (btnITunes) btnITunes.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "Synced iTunes Playlists";
+            titleEl.style.color = "#FA233B";
+        }
+    } else if (serviceName === 'YouTube') {
+        if (btnYouTube) btnYouTube.classList.add("active-sub-tab");
+        if (titleEl) {
+            titleEl.textContent = "Synced YouTube Music Playlists";
+            titleEl.style.color = "#FF0000";
+        }
+    }
+
+    if (promptEl) {
+        promptEl.textContent = `Connect your ${serviceName} account in Settings to view your public and private playlists here! Your public playlists can be viewed by others, while your private playlists are only viewed by those you've shared it with.`;
+    }
+}
+
 function initSearchEngine() {
     const resultsContainer = document.getElementById("search-results-container");
     const labelEl = document.getElementById("search-query-label");
