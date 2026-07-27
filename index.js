@@ -14,7 +14,6 @@ window.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("light-mode");
     }
 
-    // Smart return-page tracker (ignores auth pages)
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
     if (!isAuthPage) {
@@ -42,12 +41,11 @@ function checkUserSession() {
 
     if (navActions) {
         if (loggedInUser) {
-            // Retrieve exact stored display name if available to preserve exact capitalization
+            // Retrieve exact stored display name to preserve exact casing (e.g. CallMeSlick)
             const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
             const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
             const exactDisplayName = (matchedKey && users[matchedKey].displayName) ? users[matchedKey].displayName : loggedInUser;
 
-            // Display exact username on profile page without modifying case
             const userDisplayName = document.getElementById("user-display-name");
             if (userDisplayName) {
                 userDisplayName.textContent = exactDisplayName;
@@ -97,7 +95,7 @@ if (searchInput) {
 
 
 // ==========================================================================
-// AUTHENTICATION ENGINE (CASE-PRESERVING & CASE-INSENSITIVE LOGIN)
+// AUTHENTICATION ENGINE (CASE-PRESERVING)
 // ==========================================================================
 
 function displayAuthError(elementId, message) {
@@ -137,7 +135,6 @@ if (signinForm) {
 
             const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
-            // Case-insensitive lookup match
             const matchedKey = Object.keys(users).find(
                 u => u.toLowerCase() === rawUsername.toLowerCase()
             );
@@ -152,7 +149,6 @@ if (signinForm) {
                 return;
             }
 
-            // Save the exact casing entered during sign up
             const preservedName = users[matchedKey].displayName || matchedKey;
             localStorage.setItem("loggedInUser", preservedName);
 
@@ -172,14 +168,13 @@ if (signupForm) {
         e.preventDefault();
 
         try {
-            const rawUsername = document.getElementById("signup-username").value.trim(); // Preserves exact casing (e.g., CallMeSlick)
+            const rawUsername = document.getElementById("signup-username").value.trim();
             const email = document.getElementById("signup-email").value.trim().toLowerCase();
             const pass = document.getElementById("signup-password").value;
             const confirmPass = document.getElementById("signup-password-confirm").value;
 
             const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
 
-            // Case-insensitive duplicate username check
             const existingUser = Object.keys(users).find(
                 u => u.toLowerCase() === rawUsername.toLowerCase()
             );
@@ -205,7 +200,6 @@ if (signupForm) {
                 return;
             }
 
-            // Save exact username casing
             users[rawUsername] = { 
                 email: email, 
                 pass: pass, 
@@ -443,7 +437,7 @@ function toggleFollowUser(username, btnEl) {
 
 
 // ==========================================================================
-// RELEVANCE-SORTED MUSIC SEARCH ENGINE (TITLE ➔ LYRICS ➔ ARTIST)
+// HIGH-RELEVANCE MULTI-CATEGORY MUSIC SEARCH ENGINE
 // ==========================================================================
 
 let currentSearchFilter = "all";
@@ -481,7 +475,8 @@ async function fetchGlobalMusicData(query) {
     const container = document.getElementById("search-results-container");
 
     try {
-        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=50&entity=song,album,musicArtist`);
+        // Expand search limit to 100 to catch deeper title matches
+        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=100&entity=song,album,musicArtist`);
         const data = await response.json();
 
         fetchedSearchResults.songs = [];
@@ -490,18 +485,18 @@ async function fetchGlobalMusicData(query) {
         fetchedSearchResults.playlists = [];
 
         const lowerQuery = query.toLowerCase();
+        const addedAlbums = new Set();
+        const addedArtists = new Set();
 
         data.results.forEach(item => {
             if (item.wrapperType === "track") {
-                const titleMatch = item.trackName.toLowerCase().includes(lowerQuery);
-                const artistMatch = item.artistName.toLowerCase().includes(lowerQuery);
+                const titleLower = (item.trackName || "").toLowerCase();
+                const artistLower = (item.artistName || "").toLowerCase();
 
-                // Assign Priority Score: 1 = Title Match, 2 = Lyric/Other Match, 3 = Artist Match
+                // Assign Priority Rank: 1 = Title matches query word, 2 = Artist matches query word
                 let priorityScore = 2;
-                if (titleMatch) {
-                    priorityScore = 1; // Highest priority for Title Matches
-                } else if (artistMatch) {
-                    priorityScore = 3; // Lower priority if matching Artist only
+                if (titleLower.includes(lowerQuery)) {
+                    priorityScore = 1;
                 }
 
                 fetchedSearchResults.songs.push({
@@ -509,39 +504,54 @@ async function fetchGlobalMusicData(query) {
                     title: item.trackName,
                     artist: item.artistName,
                     album: item.collectionName,
-                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb"),
+                    cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png",
                     priority: priorityScore
                 });
-            } else if (item.wrapperType === "collection") {
+
+                // Deduplicate and pull albums from track data
+                if (item.collectionId && !addedAlbums.has(item.collectionId)) {
+                    addedAlbums.add(item.collectionId);
+                    fetchedSearchResults.albums.push({
+                        id: item.collectionId,
+                        title: item.collectionName,
+                        artist: item.artistName,
+                        year: item.releaseDate ? new Date(item.releaseDate).getFullYear() : "",
+                        cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png"
+                    });
+                }
+
+                // Deduplicate and pull artists from track data
+                if (item.artistId && !addedArtists.has(item.artistId)) {
+                    addedArtists.add(item.artistId);
+                    fetchedSearchResults.artists.push({
+                        id: item.artistId,
+                        name: item.artistName,
+                        genre: item.primaryGenreName || "Artist",
+                        image: "PutMeOnLogo.png"
+                    });
+                }
+            } else if (item.wrapperType === "collection" && !addedAlbums.has(item.collectionId)) {
+                addedAlbums.add(item.collectionId);
                 fetchedSearchResults.albums.push({
                     id: item.collectionId,
                     title: item.collectionName,
                     artist: item.artistName,
-                    year: new Date(item.releaseDate).getFullYear(),
-                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb")
+                    year: item.releaseDate ? new Date(item.releaseDate).getFullYear() : "",
+                    cover: item.artworkUrl100 ? item.artworkUrl100.replace("100x100bb", "300x300bb") : "PutMeOnLogo.png"
                 });
-            } else if (item.wrapperType === "artist") {
+            } else if (item.wrapperType === "artist" && !addedArtists.has(item.artistId)) {
+                addedArtists.add(item.artistId);
                 fetchedSearchResults.artists.push({
                     id: item.artistId,
                     name: item.artistName,
-                    genre: item.primaryGenreName || "Music",
-                    image: "PutMeOnMascot.png"
+                    genre: item.primaryGenreName || "Artist",
+                    image: "PutMeOnLogo.png"
                 });
             }
         });
 
-        // SORT SONGS BY RELEVANCE: Title Matches (1) ➔ Lyric Matches (2) ➔ Artist Matches (3)
+        // Priority Sort: Title Matches first (Priority 1) before Artist-only matches (Priority 2)
         fetchedSearchResults.songs.sort((a, b) => a.priority - b.priority);
-
-        // Add matching community playlist
-        const currentUser = localStorage.getItem("loggedInUser") || "CallMeSlick";
-        fetchedSearchResults.playlists.push({
-            id: `pl-${Date.now()}`,
-            title: `Essential ${query} Mix`,
-            creator: currentUser,
-            songsCount: 20,
-            cover: "PutMeOnLogo.png"
-        });
 
         if (labelEl) {
             labelEl.textContent = `Showing results for "${query}"`;
@@ -642,28 +652,6 @@ function renderSearchResults() {
                 <div>
                     <strong>${artist.name}</strong><br>
                     <small style="color: #a0aec0;">Artist • ${artist.genre}</small>
-                </div>
-            `;
-            section.appendChild(card);
-        });
-        container.appendChild(section);
-    }
-
-    // 4. PLAYLISTS
-    if ((currentSearchFilter === 'all' || currentSearchFilter === 'playlists') && fetchedSearchResults.playlists.length > 0) {
-        hasAnyResults = true;
-        const section = document.createElement("div");
-        section.innerHTML = `<h3 style="color: #1DB954; margin-bottom: 12px; text-align: left;">🎧 Playlists</h3>`;
-
-        fetchedSearchResults.playlists.forEach(pl => {
-            const card = document.createElement("div");
-            card.className = "search-result-card";
-            card.onclick = () => window.location.href = `playlist.html?id=${pl.id}`;
-            card.innerHTML = `
-                <img src="${pl.cover}" alt="${pl.title}">
-                <div>
-                    <strong>${pl.title}</strong><br>
-                    <small style="color: #a0aec0;">Curated by @${pl.creator} • ${pl.songsCount} tracks</small>
                 </div>
             `;
             section.appendChild(card);
