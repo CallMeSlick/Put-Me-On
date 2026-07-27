@@ -12,34 +12,39 @@
     <nav>
         <div class="nav-container">
             <ul class="navbar-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="mascot.html">Mascot</a></li>
-                <li><a href="ai-matcher.html">AI Vibe Matcher</a></li>
-                <li><a href="license.html">License</a></li>
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">🤖 AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">💬 Messages</a></li>
             </ul>
 
             <div class="nav-search-container">
                 <form action="search.html" method="GET" id="search-form">
-                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
                 </form>
             </div>
 
             <div class="nav-actions">
-                <a href="profile.html" class="nav-post-btn">Profile</a>
-                <button id="theme-button">Toggle Theme</button>
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
             </div>
         </div>
     </nav>
 
     <div class="section-container center-page">
-        <h1 style="color: #7FDBFF; text-align: center; margin-bottom: 20px;">🎵 About Put Me On</h1>
+        <h1 style="color: #7FDBFF; margin-bottom: 20px;">🎵 About Put Me On</h1>
         
         <p>Put Me On is a music discovery platform where users can create posts about songs they love and recommend them to others. Each recommendation includes the song title, artist, album, genre, and a short description explaining why others should listen.</p>
 
         <p>The goal is to help listeners discover music through real people instead of relying solely on automated streaming algorithms.</p>
 
         <p>Users can create accounts, review songs, connect with other music lovers, share playlists, and generate AI-powered music recommendations based on their exact vibe.</p>
+    </div>
+
+    <div class="footer">
+        <a href="license.html">License & Disclaimer</a> |
+        <a href="about.html">About</a> |
+        <a href="mascot.html">Mascot</a>
     </div>
 
     <script src="index.js"></script>
