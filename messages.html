@@ -12,23 +12,22 @@
     <nav>
         <div class="nav-container">
             <ul class="navbar-links">
-                <li><a href="index.html#about">About</a></li>
-                <li><a href="index.html#mascot">Mascot</a></li>
-                <li><a href="profile.html">Profile</a></li>
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">🤖 AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">💬 Messages</a></li>
             </ul>
 
             <div class="nav-search-container">
                 <form action="search.html" method="GET" id="search-form">
-                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
                 </form>
             </div>
 
             <div class="nav-actions">
-                <a href="messages.html" class="nav-post-btn" style="position: relative;">
-                    💬 Messages 
-                    <span id="nav-unread-badge" class="unread-badge">2</span>
-                </a>
-                <button id="theme-button">Toggle Theme</button>
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
             </div>
         </div>
     </nav>
@@ -37,13 +36,13 @@
         
         <aside class="chat-sidebar">
             <div class="sidebar-header">
-                <h2>Messages</h2>
-                <button id="open-group-modal-btn" class="btn-primary" style="font-size: 12px; padding: 6px 12px;">+ New Group</button>
+                <h2 style="margin: 0; color: #7FDBFF; font-size: 20px;">Messages</h2>
+                <button id="open-group-modal-btn" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12; font-size: 11px; padding: 6px 12px;">+ New Group</button>
             </div>
 
             <div id="chat-threads-list" class="threads-list">
                 <div class="thread-card active-thread" onclick="openChat('alex')">
-                    <img src="PutMeOnMascot.png" class="thread-avatar" alt="User Avatar">
+                    <img src="PutMeOnMascot.png" class="thread-avatar" alt="Avatar">
                     <div class="thread-info">
                         <div class="thread-top">
                             <strong class="thread-name">@Alex_NYC</strong>
@@ -58,7 +57,7 @@
                     <div class="thread-avatar group-avatar-icon">👥</div>
                     <div class="thread-info">
                         <div class="thread-top">
-                            <strong class="thread-name" id="thread-group1-name">Synthwave Lovers 🎹</strong>
+                            <strong class="thread-name">Synthwave Lovers 🎹</strong>
                             <span class="thread-time">1:45 PM</span>
                         </div>
                         <p class="thread-preview">Jordan: Check out this album!</p>
@@ -69,34 +68,30 @@
         </aside>
 
         <main class="chat-window" id="chat-window-box">
-            
             <div class="chat-header">
-                <div class="chat-header-user">
-                    <h3 id="chat-title">@Alex_NYC</h3>
-                    <small id="chat-subtitle" style="color: #a0aec0;">Direct Message</small>
+                <div>
+                    <h3 id="chat-title" style="margin: 0; color: #7FDBFF;">@Alex_NYC</h3>
+                    <small style="color: #a0aec0;">Direct Message</small>
                 </div>
-                
-                <div class="chat-header-actions">
-                    <button class="header-button" onclick="editChatSettings()" style="font-size: 12px; padding: 6px 12px;">⚙️ Chat Settings</button>
-                </div>
+                <button onclick="editChatSettings()" class="nav-pill" style="background: transparent; color: #7FDBFF; border: 1px solid #7FDBFF; font-size: 11px;">⚙️ Chat Settings</button>
             </div>
 
             <div class="chat-messages" id="messages-log">
                 <div class="message-bubble received">
                     <small class="message-sender">@Alex_NYC • 3:10 PM</small>
-                    <p>Yo! Have you listened to that new Weeknd track yet?</p>
+                    <p style="margin: 0; padding: 0;">Yo! Have you listened to that new Weeknd track yet?</p>
                 </div>
 
                 <div class="message-bubble sent">
                     <small class="message-sender">You • 3:11 PM</small>
-                    <p>Yeah! "Less Than Zero" is on loop for me right now 🔥</p>
+                    <p style="margin: 0; padding: 0;">Yeah! "Less Than Zero" is on loop for me right now 🔥</p>
                 </div>
 
-                <div class="message-bubble received song-share-bubble">
+                <div class="message-bubble received">
                     <small class="message-sender">@Alex_NYC • 3:12 PM</small>
-                    <p>🎵 <strong>Song Recommendation Shared:</strong></p>
+                    <p style="margin: 0; padding: 0;">🎵 <strong>Song Recommendation Shared:</strong></p>
                     <div class="shared-song-card" onclick="window.location.href='song.html?id=0VjIjW4GlUZAMYd2vXMi3b'">
-                        <img src="PutMeOnLogo.png" alt="Cover">
+                        <img src="PutMeOnLogo.png" alt="Cover" style="width: 36px; height: 36px; border-radius: 4px; margin: 0;">
                         <div>
                             <strong>Less Than Zero</strong><br>
                             <small>The Weeknd</small>
@@ -107,38 +102,38 @@
 
             <form id="send-message-form" class="chat-input-area">
                 <input type="text" id="message-text-input" placeholder="Type a message or share a song..." autocomplete="off">
-                <button type="submit" class="btn-primary">Send</button>
+                <button type="submit" style="background-color: #7FDBFF; color: #0d0e12; border-radius: 20px; font-weight: bold; padding: 8px 18px;">Send</button>
             </form>
         </main>
     </div>
 
-    <div id="group-modal" class="modal">
-        <div class="modal-content" style="text-align: left; max-width: 500px;">
-            <span class="close-modal-btn" onclick="closeGroupModal()">&times;</span>
+    <div id="group-modal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
+        <div class="section-container" style="max-width: 450px; position: relative;">
+            <span onclick="closeGroupModal()" style="position: absolute; top: 12px; right: 20px; font-size: 24px; cursor: pointer; color: #a0aec0;">&times;</span>
             <h2 style="color: #7FDBFF; margin-top: 0;">Create a Group Chat</h2>
             
-            <form id="create-group-form">
+            <form id="create-group-form" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
                 <label style="color: #a0aec0; font-size: 13px;">Group Name</label>
-                <input type="text" id="group-name-input" placeholder="e.g. Late Night Vibes Squad" required style="width: 100%; padding: 10px; margin: 8px 0 15px 0; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="text" id="group-name-input" placeholder="e.g. Late Night Vibes Squad" required style="padding: 10px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
 
-                <label style="color: #a0aec0; font-size: 13px;">Add Mutually Followed Friends</label>
-                <div id="mutuals-list" style="max-height: 180px; overflow-y: auto; margin: 10px 0; padding: 10px; background: #0d0e12; border-radius: 8px; border: 1px solid rgba(127,219,255,0.2);">
-                    <label style="display: flex; align-items: center; gap: 10px; padding: 6px 0; color: white;">
-                        <input type="checkbox" value="@Sophia_FL"> @Sophia_FL (Mutual)
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; padding: 6px 0; color: white;">
-                        <input type="checkbox" value="@Jordan_Chi"> @Jordan_Chi (Mutual)
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; padding: 6px 0; color: white;">
-                        <input type="checkbox" value="@Taylor_LA"> @Taylor_LA (Mutual)
-                    </label>
+                <label style="color: #a0aec0; font-size: 13px;">Select Friends</label>
+                <div style="background: #0d0e12; padding: 10px; border-radius: 8px; border: 1px solid rgba(127,219,255,0.2);">
+                    <label style="display: flex; align-items: center; gap: 10px; color: white;"><input type="checkbox"> @Sophia_FL</label>
+                    <label style="display: flex; align-items: center; gap: 10px; color: white; margin-top: 5px;"><input type="checkbox"> @Jordan_Chi</label>
                 </div>
 
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Create Group</button>
+                <button type="submit" style="margin-top: 10px;">Create Group</button>
             </form>
         </div>
     </div>
 
+    <div class="footer">
+        <a href="license.html">License & Disclaimer</a> |
+        <a href="about.html">About</a> |
+        <a href="mascot.html">Mascot</a>
+    </div>
+
     <script src="index.js"></script>
 </body>
+
 </html>
