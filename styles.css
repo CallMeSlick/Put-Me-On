@@ -525,3 +525,18 @@ body.light-mode .footer {
     color: white;
     font-size: 13px;
 }
+
+/* ==========================================================================
+   PROFILE PICTURE HOVER EFFECT & GLOW
+   ========================================================================== */
+
+#user-pfp {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#user-pfp:hover {
+    border-color: #b18cff !important;
+    box-shadow: 0 0 20px rgba(127, 219, 255, 0.8), 0 0 30px rgba(177, 140, 255, 0.6) !important;
+    transform: scale(1.04);
+}
