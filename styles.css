@@ -891,3 +891,32 @@ ul li {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* ========================= */
+/* EQUALLY SPACED NAVBAR TABS */
+/* ========================= */
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px; /* Equal spacing across links */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Equal button spacing */
+}
