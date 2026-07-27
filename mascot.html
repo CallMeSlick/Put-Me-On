@@ -12,33 +12,32 @@
     <nav>
         <div class="nav-container">
             <ul class="navbar-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="mascot.html">Mascot</a></li>
-                <li><a href="ai-matcher.html">AI Vibe Matcher</a></li>
-                <li><a href="license.html">License</a></li>
+                <li><a href="index.html" class="nav-pill nav-home">Home</a></li>
+                <li><a href="ai-matcher.html" class="nav-pill nav-ai">🤖 AI Matcher</a></li>
+                <li><a href="messages.html" class="nav-pill nav-msg">💬 Messages</a></li>
             </ul>
 
             <div class="nav-search-container">
                 <form action="search.html" method="GET" id="search-form">
-                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, or vibes...">
+                    <input type="text" name="query" id="music-search" placeholder="🔍 Search songs, artists, vibes...">
                 </form>
             </div>
 
             <div class="nav-actions">
-                <a href="profile.html" class="nav-post-btn">Profile</a>
-                <button id="theme-button">Toggle Theme</button>
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
             </div>
         </div>
     </nav>
 
-    <div class="song-card center-page" style="margin-top: 30px;">
+    <div class="section-container center-page">
         <h1 style="color: #b18cff;">🎧 Meet Our Mascot</h1>
         <img src="PutMeOnMascot.png" alt="Put Me On Mascot" style="width: 260px; height: auto; margin: 20px 0;">
         <p>Our mascot represents the music lover inside all of us! Always tuned in and ready to put you on to the best hidden gems, classic albums, and trending tracks.</p>
     </div>
 
-    <div class="song-card" style="margin-top: 30px;">
+    <div class="song-card center-page" style="margin-top: 30px;">
         <h2 style="margin-top: 0; color: #7FDBFF;">⭐ Song Recommended by the Author</h2>
         <h3>Recommended by: Christian</h3>
         <p><strong>Song:</strong> Less Than Zero</p>
@@ -51,6 +50,12 @@
             feelings of regret, self-reflection, and growth while remaining
             incredibly catchy and replayable.
         </p>
+    </div>
+
+    <div class="footer">
+        <a href="license.html">License & Disclaimer</a> |
+        <a href="about.html">About</a> |
+        <a href="mascot.html">Mascot</a>
     </div>
 
     <script src="index.js"></script>
