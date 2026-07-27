@@ -1,489 +1,15 @@
 // ==========================================================================
-// SYSTEM THEME & DYNAMIC SESSION ENGINE
+// REAL-TIME GLOBAL MUSIC SEARCH ENGINE (ALL ARTISTS & SONGS)
 // ==========================================================================
 
-const toggleTheme = () => {
-    document.body.classList.toggle("light-mode");
-    const isLight = document.body.classList.contains("light-mode");
-    localStorage.setItem("theme_preference", isLight ? "light" : "dark");
+let currentSearchFilter = "all";
+let activeSearchQuery = "";
+let fetchedSearchResults = {
+    songs: [],
+    albums: [],
+    artists: [],
+    playlists: []
 };
-
-window.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = localStorage.getItem("theme_preference");
-    if (savedTheme === "light") {
-        document.body.classList.add("light-mode");
-    }
-
-    // --- SMART REDIRECT TRACKER ---
-    // Only save the location if it is NOT an authentication page
-    const currentPage = window.location.pathname.split("/").pop() || "index.html";
-    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
-
-    if (!isAuthPage) {
-        sessionStorage.setItem("lastContentPage", currentPage);
-    }
-
-    checkUserSession();
-    checkAuthorPermissions();
-    loadAuthorPickData();
-    updateProfileStats();
-    initSocialListPage();
-
-    const themeBtn = document.getElementById("theme-button");
-    if (themeBtn) {
-        themeBtn.addEventListener("click", toggleTheme);
-    }
-});
-
-// Update Header Navigation dynamically based on WHO is logged in
-function checkUserSession() {
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    const navActions = document.querySelector(".nav-actions");
-    const currentPage = window.location.pathname.split("/").pop();
-
-    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
-
-    if (navActions) {
-        if (loggedInUser) {
-            // Set display name on profile page without @
-            const userDisplayName = document.getElementById("user-display-name");
-            if (userDisplayName) {
-                userDisplayName.textContent = loggedInUser;
-            }
-
-            let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
-
-            navActions.innerHTML = `
-                <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">Profile</a>
-                <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">Post</a>
-                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
-                ${settingsGear}
-            `;
-        } else {
-            navActions.innerHTML = `
-                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
-                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
-                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
-                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
-            `;
-        }
-
-        const themeBtn = document.getElementById("theme-button");
-        if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
-    }
-}
-
-function signOutUser() {
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "index.html";
-}
-
-// ==========================================================================
-// SEARCH BAR
-// ==========================================================================
-
-const searchInput = document.getElementById("music-search");
-if (searchInput) {
-    searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter" && searchInput.value.trim().length > 0) {
-            e.preventDefault();
-            window.location.href = `search.html?query=${encodeURIComponent(searchInput.value.trim())}`;
-        }
-    });
-}
-
-// ==========================================================================
-// DETAILED AUTHENTICATION ENGINE (WITH ERROR MESSAGES & SMART REDIRECTS)
-// ==========================================================================
-
-function displayAuthError(elementId, message) {
-    const errorEl = document.getElementById(elementId);
-    if (errorEl) {
-        errorEl.textContent = message;
-        errorEl.style.display = "block";
-        errorEl.style.color = "#ff4136";
-        errorEl.style.backgroundColor = "rgba(255, 65, 54, 0.15)";
-        errorEl.style.border = "1px solid #ff4136";
-        errorEl.style.padding = "10px";
-        errorEl.style.borderRadius = "8px";
-        errorEl.style.marginBottom = "15px";
-        errorEl.style.fontWeight = "bold";
-    } else {
-        alert(message);
-    }
-}
-
-// 1. SIGN IN
-const signinForm = document.getElementById("signin-form");
-if (signinForm) {
-    signinForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        try {
-            const usernameInput = document.getElementById("signin-username");
-            const passwordInput = document.getElementById("signin-password");
-
-            if (!usernameInput || !passwordInput) {
-                displayAuthError("auth-error", "Error: Input fields missing. Please refresh.");
-                return;
-            }
-
-            const username = usernameInput.value.trim().toLowerCase();
-            const pass = passwordInput.value;
-
-            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-
-            if (!users[username]) {
-                displayAuthError("auth-error", "Error: Username not found. Please check your spelling or Sign Up.");
-                return;
-            }
-
-            if (users[username].pass !== pass) {
-                displayAuthError("auth-error", "Error: Incorrect password. Please try again.");
-                return;
-            }
-
-            // Success: Log in & redirect to stored content page
-            localStorage.setItem("loggedInUser", username);
-            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
-            window.location.href = returnPage;
-
-        } catch (err) {
-            displayAuthError("auth-error", "Error: An unexpected authentication error occurred.");
-        }
-    });
-}
-
-// 2. SIGN UP
-const signupForm = document.getElementById("signup-form");
-if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        try {
-            const username = document.getElementById("signup-username").value.trim().toLowerCase();
-            const email = document.getElementById("signup-email").value.trim().toLowerCase();
-            const pass = document.getElementById("signup-password").value;
-            const confirmPass = document.getElementById("signup-password-confirm").value;
-
-            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-
-            if (users[username]) {
-                displayAuthError("signup-error", `Error: The username '@${username}' is already taken!`);
-                return;
-            }
-
-            const existingEmailUser = Object.keys(users).find(u => users[u].email === email);
-            if (existingEmailUser) {
-                displayAuthError("signup-error", "Error: An account is already registered with this Gmail address!");
-                return;
-            }
-
-            if (pass !== confirmPass) {
-                displayAuthError("signup-error", "Error: Passwords do not match. Please retype password.");
-                return;
-            }
-
-            if (pass.length < 4) {
-                displayAuthError("signup-error", "Error: Password must be at least 4 characters long.");
-                return;
-            }
-
-            // Success: Register User & redirect to stored content page
-            users[username] = { email, pass };
-            localStorage.setItem("pmo_users", JSON.stringify(users));
-            localStorage.setItem("loggedInUser", username);
-
-            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
-            window.location.href = returnPage;
-
-        } catch (err) {
-            displayAuthError("signup-error", "Error: Could not complete registration. Please try again.");
-        }
-    });
-}
-
-// 3. FORGOT PASSWORD
-const forgotEmailForm = document.getElementById("forgot-email-form");
-let resetUsername = null;
-
-if (forgotEmailForm) {
-    forgotEmailForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const email = document.getElementById("forgot-email").value.trim().toLowerCase();
-        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-
-        resetUsername = Object.keys(users).find(u => users[u].email === email);
-
-        if (!resetUsername) {
-            displayAuthError("forgot-error", "Error: No account found registered to that Gmail address.");
-            return;
-        }
-
-        document.getElementById("forgot-step-1").style.display = "none";
-        document.getElementById("forgot-step-2").style.display = "block";
-    });
-}
-
-const resetPasswordForm = document.getElementById("reset-password-form");
-if (resetPasswordForm) {
-    resetPasswordForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const newPass = document.getElementById("new-password").value;
-        const confirmPass = document.getElementById("confirm-new-password").value;
-
-        if (newPass !== confirmPass) {
-            displayAuthError("reset-error", "Error: Passwords do not match!");
-            return;
-        }
-
-        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-        if (resetUsername && users[resetUsername]) {
-            users[resetUsername].pass = newPass;
-            localStorage.setItem("pmo_users", JSON.stringify(users));
-        }
-
-        alert("Password updated successfully! Please sign in.");
-        window.location.href = "signin.html";
-    });
-}
-
-// ==========================================================================
-// PROFILE TABS & STATS
-// ==========================================================================
-
-function switchTab(tabName) {
-    const contents = document.querySelectorAll(".profile-tab-content");
-    const buttons = document.querySelectorAll(".profile-tab-btn");
-
-    contents.forEach(content => content.style.display = "none");
-    buttons.forEach(btn => btn.classList.remove("active-tab"));
-
-    const targetContent = document.getElementById(`tab-${tabName}`);
-    if (targetContent) {
-        targetContent.style.display = "block";
-    }
-}
-
-function updateProfileStats() {
-    const following = JSON.parse(localStorage.getItem("following_list") || "[]");
-    const followers = JSON.parse(localStorage.getItem("followers_list") || "[]");
-    const artists = JSON.parse(localStorage.getItem("followed_artists_list") || "[]");
-
-    const statFollowers = document.getElementById("stat-followers");
-    const statFollowing = document.getElementById("stat-following");
-    const statArtists = document.getElementById("stat-artists");
-
-    if (statFollowers) statFollowers.textContent = followers.length;
-    if (statFollowing) statFollowing.textContent = following.length;
-    if (statArtists) statArtists.textContent = artists.length;
-}
-
-// ==========================================================================
-// AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick / @Callmesiick)
-// ==========================================================================
-
-function checkAuthorPermissions() {
-    const loggedInUser = (localStorage.getItem("loggedInUser") || "").toLowerCase();
-    const editControls = document.getElementById("author-edit-controls");
-
-    if ((loggedInUser === "callmeslick" || loggedInUser === "callmesiick") && editControls) {
-        editControls.style.display = "block";
-    }
-}
-
-function toggleAuthorForm() {
-    const form = document.getElementById("author-update-form");
-    if (form) {
-        form.style.display = form.style.display === "none" ? "flex" : "none";
-    }
-}
-
-function loadAuthorPickData() {
-    const savedPick = JSON.parse(localStorage.getItem("author_custom_pick") || "null");
-    if (savedPick) {
-        const songEl = document.getElementById("author-song-title");
-        const artistEl = document.getElementById("author-artist-name");
-        const albumEl = document.getElementById("author-album-name");
-        const genreEl = document.getElementById("author-genre-name");
-        const descEl = document.getElementById("author-description-text");
-
-        if (songEl) songEl.textContent = savedPick.song;
-        if (artistEl) artistEl.textContent = savedPick.artist;
-        if (albumEl) albumEl.textContent = savedPick.album;
-        if (genreEl) genreEl.textContent = savedPick.genre;
-        if (descEl) descEl.textContent = savedPick.desc;
-    }
-}
-
-const authorUpdateForm = document.getElementById("author-update-form");
-if (authorUpdateForm) {
-    authorUpdateForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const pickData = {
-            song: document.getElementById("edit-song-title").value.trim(),
-            artist: document.getElementById("edit-artist-name").value.trim(),
-            album: document.getElementById("edit-album-name").value.trim(),
-            genre: document.getElementById("edit-genre-name").value.trim(),
-            desc: document.getElementById("edit-description").value.trim()
-        };
-
-        localStorage.setItem("author_custom_pick", JSON.stringify(pickData));
-        loadAuthorPickData();
-        toggleAuthorForm();
-        alert("Author Pick updated successfully!");
-    });
-}
-
-// ==========================================================================
-// DYNAMIC SOCIAL FOLLOW LISTS
-// ==========================================================================
-
-const mockCommunityData = [
-    { username: "Alex_NYC", pfp: "PutMeOnMascot.png", type: "user" },
-    { username: "Jordan_Chi", pfp: "PutMeOnMascot.png", type: "user" },
-    { username: "Sophia_FL", pfp: "PutMeOnMascot.png", type: "user" },
-    { username: "Taylor_LA", pfp: "PutMeOnMascot.png", type: "user" },
-    { username: "The Weeknd", pfp: "PutMeOnLogo.png", type: "artist" },
-    { username: "Kendrick Lamar", pfp: "PutMeOnLogo.png", type: "artist" },
-    { username: "SZA", pfp: "PutMeOnLogo.png", type: "artist" }
-];
-
-function initSocialListPage() {
-    const listContainer = document.getElementById("social-accounts-list");
-    const searchInputEl = document.getElementById("social-user-search");
-    const titleEl = document.getElementById("social-title");
-
-    if (!listContainer) return;
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const viewType = urlParams.get("type") || "following";
-
-    if (titleEl) {
-        if (viewType === "followers") titleEl.textContent = "👥 Followers";
-        else if (viewType === "artists") titleEl.textContent = "🎤 Followed Artists";
-        else titleEl.textContent = "🎧 Following";
-    }
-
-    renderSocialList("", viewType);
-
-    if (searchInputEl) {
-        searchInputEl.addEventListener("input", (e) => {
-            renderSocialList(e.target.value.trim().toLowerCase(), viewType);
-        });
-    }
-}
-
-function renderSocialList(filterText, viewType) {
-    const listContainer = document.getElementById("social-accounts-list");
-    if (!listContainer) return;
-
-    listContainer.innerHTML = "";
-    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
-
-    const filtered = mockCommunityData.filter(item => {
-        const matchesName = item.username.toLowerCase().includes(filterText);
-        if (viewType === "artists") return matchesName && item.type === "artist";
-        return matchesName && item.type === "user";
-    });
-
-    filtered.forEach(item => {
-        const isFollowing = followingList.includes(item.username);
-        const card = document.createElement("div");
-        card.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 12px 18px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);";
-
-        card.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="${item.pfp}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                <strong style="color: white; font-size: 15px;">@${item.username}</strong>
-            </div>
-            <button class="nav-pill" onclick="toggleFollowUser('${item.username}', this)" style="background-color: ${isFollowing ? '#ff4136' : '#7FDBFF'}; color: ${isFollowing ? 'white' : 'black'}; font-size: 16px; padding: 6px 16px;">
-                ${isFollowing ? '-' : '+'}
-            </button>
-        `;
-
-        listContainer.appendChild(card);
-    });
-}
-
-function toggleFollowUser(username, btnEl) {
-    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
-
-    if (followingList.includes(username)) {
-        followingList = followingList.filter(u => u !== username);
-        btnEl.textContent = "+";
-        btnEl.style.backgroundColor = "#7FDBFF";
-        btnEl.style.color = "black";
-    } else {
-        followingList.push(username);
-        btnEl.textContent = "-";
-        btnEl.style.backgroundColor = "#ff4136";
-        btnEl.style.color = "white";
-    }
-
-    localStorage.setItem("following_list", JSON.stringify(followingList));
-    updateProfileStats();
-}
-
-// ==========================================================================
-// PLAYLIST SUB-TAB SWITCHER & DYNAMIC PROMPTS
-// ==========================================================================
-
-function switchPlaylistSubTab(serviceName) {
-    const titleEl = document.getElementById("playlist-service-title");
-    const promptEl = document.getElementById("playlist-connect-prompt");
-
-    const btnSpotify = document.getElementById("sub-btn-spotify");
-    const btnApple = document.getElementById("sub-btn-apple");
-    const btnYouTube = document.getElementById("sub-btn-youtube");
-
-    // Reset active opacity styling on buttons
-    [btnSpotify, btnApple, btnYouTube].forEach(btn => {
-        if (btn) btn.classList.remove("active-sub-tab");
-    });
-
-    if (serviceName === 'Spotify') {
-        if (btnSpotify) btnSpotify.classList.add("active-sub-tab");
-        if (titleEl) {
-            titleEl.textContent = "Synced Spotify Playlists";
-            titleEl.style.color = "#1DB954";
-        }
-    } else if (serviceName === 'Apple Music') {
-        if (btnApple) btnApple.classList.add("active-sub-tab");
-        if (titleEl) {
-            titleEl.textContent = "Synced Apple Music Playlists";
-            titleEl.style.color = "#FA233B";
-        }
-    } else if (serviceName === 'YouTube') {
-        if (btnYouTube) btnYouTube.classList.add("active-sub-tab");
-        if (titleEl) {
-            titleEl.textContent = "Synced YouTube Music Playlists";
-            titleEl.style.color = "#FF0000";
-        }
-    }
-
-    if (promptEl) {
-        promptEl.textContent = `Connect your ${serviceName} account in Settings to view your public and private playlists here! Your public playlists can be viewed by others, while your private playlists are only viewed by those you're shared it with.`;
-    }
-}
-
-// ==========================================================================
-// SEARCH RESULTS ENGINE
-// ==========================================================================
-
-window.addEventListener("DOMContentLoaded", () => {
-    initSearchEngine();
-});
-
-// Sample Spotify catalog search database
-const mockMusicDatabase = [
-    { id: "1", title: "Less Than Zero", artist: "The Weeknd", album: "Dawn FM", cover: "PutMeOnLogo.png", genre: "Synth-Pop" },
-    { id: "2", title: "Lessons", artist: "Eric Church", album: "Desperate Man", cover: "PutMeOnMascot.png", genre: "Country" },
-    { id: "3", title: "Less Like Me", artist: "Zach Williams", album: "Rescue Story", cover: "PutMeOnMascot.png", genre: "Christian" },
-    { id: "4", title: "Blinding Lights", artist: "The Weeknd", album: "After Hours", cover: "PutMeOnLogo.png", genre: "Synth-Pop" },
-    { id: "5", title: "Starboy", artist: "The Weeknd", album: "Starboy", cover: "PutMeOnLogo.png", genre: "R&B / Pop" },
-    { id: "6", title: "Kill Bill", artist: "SZA", album: "SOS", cover: "PutMeOnMascot.png", genre: "R&B" }
-];
 
 function initSearchEngine() {
     const resultsContainer = document.getElementById("search-results-container");
@@ -492,55 +18,205 @@ function initSearchEngine() {
     if (!resultsContainer) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const query = (urlParams.get("query") || "").trim().toLowerCase();
+    activeSearchQuery = (urlParams.get("query") || "").trim();
 
-    if (!query) {
-        if (labelEl) labelEl.textContent = "Please enter a song name, artist, or vibe in the search bar above.";
+    if (!activeSearchQuery) {
+        if (labelEl) labelEl.textContent = "Please enter a song, artist, album, or vibe in the search bar above.";
         return;
     }
 
     if (labelEl) {
-        labelEl.textContent = `Showing results for "${query}"`;
+        labelEl.textContent = `Searching global music database for "${activeSearchQuery}"...`;
     }
 
-    // Filter database for matching titles, artists, or genres
-    const matches = mockMusicDatabase.filter(track => 
-        track.title.toLowerCase().includes(query) ||
-        track.artist.toLowerCase().includes(query) ||
-        track.album.toLowerCase().includes(query) ||
-        track.genre.toLowerCase().includes(query)
-    );
+    // Call the real-time music API
+    fetchGlobalMusicData(activeSearchQuery);
+}
 
-    resultsContainer.innerHTML = "";
+async function fetchGlobalMusicData(query) {
+    const labelEl = document.getElementById("search-query-label");
+    const container = document.getElementById("search-results-container");
 
-    if (matches.length === 0) {
-        resultsContainer.innerHTML = `
-            <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                <p style="color: #a0aec0; margin: 0;">No tracks found matching "${query}". Try searching for another artist or title!</p>
-            </div>
-        `;
-        return;
+    try {
+        // Query the global iTunes / Apple Music search API for any artist or track
+        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=25&entity=song,album,musicArtist`);
+        const data = await response.json();
+
+        // Separate raw API results into Songs, Albums, and Artists
+        fetchedSearchResults.songs = [];
+        fetchedSearchResults.albums = [];
+        fetchedSearchResults.artists = [];
+        fetchedSearchResults.playlists = []; // Simulated community playlists matching query
+
+        data.results.forEach(item => {
+            if (item.wrapperType === "track") {
+                fetchedSearchResults.songs.push({
+                    id: item.trackId,
+                    title: item.trackName,
+                    artist: item.artistName,
+                    album: item.collectionName,
+                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb")
+                });
+            } else if (item.wrapperType === "collection") {
+                fetchedSearchResults.albums.push({
+                    id: item.collectionId,
+                    title: item.collectionName,
+                    artist: item.artistName,
+                    year: new Date(item.releaseDate).getFullYear(),
+                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb")
+                });
+            } else if (item.wrapperType === "artist") {
+                fetchedSearchResults.artists.push({
+                    id: item.artistId,
+                    name: item.artistName,
+                    genre: item.primaryGenreName || "Music",
+                    image: "PutMeOnMascot.png"
+                });
+            }
+        });
+
+        // Add matching community playlist
+        fetchedSearchResults.playlists.push({
+            id: `pl-${Date.now()}`,
+            title: `Essential ${query} Mix`,
+            creator: "CallMeSlick",
+            songsCount: 20,
+            cover: "PutMeOnLogo.png"
+        });
+
+        if (labelEl) {
+            labelEl.textContent = `Showing results for "${query}"`;
+        }
+
+        renderSearchResults();
+
+    } catch (err) {
+        if (container) {
+            container.innerHTML = `<p style="color: #ff4136;">Error fetching music search results. Please check your internet connection.</p>`;
+        }
     }
+}
 
-    // Render result cards
-    matches.forEach(track => {
-        const card = document.createElement("div");
-        card.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2); text-align: left;";
+function filterSearchResults(category) {
+    currentSearchFilter = category;
 
-        card.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="${track.cover}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
-                <div>
-                    <strong style="color: #7FDBFF; font-size: 16px;">${track.title}</strong><br>
-                    <span style="color: white; font-size: 13px;">${track.artist}</span> • <small style="color: #a0aec0;">${track.album}</small>
-                </div>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="nav-pill" onclick="alert('Added ${track.title} to your Liked Songs!')" style="background: transparent; color: #7FDBFF; border: 1px solid #7FDBFF; font-size: 12px;">❤️ Like</button>
-                <button class="nav-pill" onclick="window.location.href='index.html#post'" style="background: #b18cff; color: #0d0e12; font-size: 12px;">➕ Recommend</button>
-            </div>
-        `;
-
-        resultsContainer.appendChild(card);
+    const buttons = ["all", "songs", "albums", "artists", "playlists"];
+    buttons.forEach(b => {
+        const btnEl = document.getElementById(`search-filter-${b}`);
+        if (btnEl) {
+            if (b === category) {
+                btnEl.classList.add("active-sub-tab");
+                btnEl.style.opacity = "1";
+            } else {
+                btnEl.classList.remove("active-sub-tab");
+                btnEl.style.opacity = "0.6";
+            }
+        }
     });
+
+    renderSearchResults();
+}
+
+function renderSearchResults() {
+    const container = document.getElementById("search-results-container");
+    if (!container) return;
+
+    container.innerHTML = "";
+    let hasAnyResults = false;
+
+    // --- 1. SONGS ---
+    if ((currentSearchFilter === 'all' || currentSearchFilter === 'songs') && fetchedSearchResults.songs.length > 0) {
+        hasAnyResults = true;
+        const section = document.createElement("div");
+        section.innerHTML = `<h3 style="color: #7FDBFF; margin-bottom: 12px; text-align: left;">🎵 Songs</h3>`;
+
+        fetchedSearchResults.songs.forEach(song => {
+            const card = document.createElement("div");
+            card.className = "search-result-card";
+            card.onclick = () => window.location.href = `song.html?id=${song.id}`;
+            card.innerHTML = `
+                <img src="${song.cover}" alt="${song.title}">
+                <div>
+                    <strong>${song.title}</strong><br>
+                    <small>${song.artist} • ${song.album}</small>
+                </div>
+            `;
+            section.appendChild(card);
+        });
+        container.appendChild(section);
+    }
+
+    // --- 2. ALBUMS ---
+    if ((currentSearchFilter === 'all' || currentSearchFilter === 'albums') && fetchedSearchResults.albums.length > 0) {
+        hasAnyResults = true;
+        const section = document.createElement("div");
+        section.innerHTML = `<h3 style="color: #b18cff; margin-bottom: 12px; text-align: left;">💿 Albums</h3>`;
+
+        fetchedSearchResults.albums.forEach(album => {
+            const card = document.createElement("div");
+            card.className = "search-result-card";
+            card.onclick = () => window.location.href = `album.html?id=${album.id}`;
+            card.innerHTML = `
+                <img src="${album.cover}" alt="${album.title}">
+                <div>
+                    <strong>${album.title}</strong><br>
+                    <small>${album.artist} • ${album.year}</small>
+                </div>
+            `;
+            section.appendChild(card);
+        });
+        container.appendChild(section);
+    }
+
+    // --- 3. ARTISTS ---
+    if ((currentSearchFilter === 'all' || currentSearchFilter === 'artists') && fetchedSearchResults.artists.length > 0) {
+        hasAnyResults = true;
+        const section = document.createElement("div");
+        section.innerHTML = `<h3 style="color: #7FDBFF; margin-bottom: 12px; text-align: left;">🎤 Artists</h3>`;
+
+        fetchedSearchResults.artists.forEach(artist => {
+            const card = document.createElement("div");
+            card.className = "search-result-card";
+            card.onclick = () => window.location.href = `artist.html?id=${artist.id}`;
+            card.innerHTML = `
+                <img src="${artist.image}" alt="${artist.name}" style="border-radius: 50%;">
+                <div>
+                    <strong>${artist.name}</strong><br>
+                    <small style="color: #a0aec0;">Artist • ${artist.genre}</small>
+                </div>
+            `;
+            section.appendChild(card);
+        });
+        container.appendChild(section);
+    }
+
+    // --- 4. PLAYLISTS ---
+    if ((currentSearchFilter === 'all' || currentSearchFilter === 'playlists') && fetchedSearchResults.playlists.length > 0) {
+        hasAnyResults = true;
+        const section = document.createElement("div");
+        section.innerHTML = `<h3 style="color: #1DB954; margin-bottom: 12px; text-align: left;">🎧 Playlists</h3>`;
+
+        fetchedSearchResults.playlists.forEach(pl => {
+            const card = document.createElement("div");
+            card.className = "search-result-card";
+            card.onclick = () => window.location.href = `playlist.html?id=${pl.id}`;
+            card.innerHTML = `
+                <img src="${pl.cover}" alt="${pl.title}">
+                <div>
+                    <strong>${pl.title}</strong><br>
+                    <small style="color: #a0aec0;">Curated by @${pl.creator} • ${pl.songsCount} tracks</small>
+                </div>
+            `;
+            section.appendChild(card);
+        });
+        container.appendChild(section);
+    }
+
+    if (!hasAnyResults) {
+        container.innerHTML = `
+            <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <p style="color: #a0aec0; margin: 0;">No results found for "${activeSearchQuery}". Try searching another name or track!</p>
+            </div>
+        `;
+    }
 }
