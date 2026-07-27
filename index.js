@@ -34,17 +34,21 @@ function checkUserSession() {
     const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
 
     if (loggedInUser && navActions) {
+        // Automatically set user display name on profile page if open
+        const userDisplayName = document.getElementById("user-display-name");
+        if (userDisplayName) {
+            userDisplayName.textContent = `@${loggedInUser}`;
+        }
+
         let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
         
         navActions.innerHTML = `
-            <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 @${loggedInUser}</a>
+            <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">👤 Profile</a>
+            <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">➕ Post</a>
             ${settingsGear}
             <button id="theme-button" class="nav-pill nav-theme">Theme</button>
         `;
         
-        const themeBtn = document.getElementById("theme-button");
-        if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
-    } else {
         const themeBtn = document.getElementById("theme-button");
         if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
     }
