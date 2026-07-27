@@ -203,7 +203,7 @@ if (searchContainer) {
     searchContainer.appendChild(dropdown);
 }
 
-// Function to fetch tracks from Spotify (using Client Credentials flow)
+// Function to fetch tracks from Spotify
 async function fetchSpotifyTracks(query) {
     if (!query || query.trim().length < 2) {
         dropdown.style.display = "none";
@@ -211,17 +211,26 @@ async function fetchSpotifyTracks(query) {
     }
 
     try {
-        // Fetch token from serverless endpoint / Vercel env variable setup
+        // 1. Get access token from Vercel backend endpoint
         const tokenResponse = await fetch("/api/spotify-token");
-        const { token } = await tokenResponse.json();
+        const tokenData = await tokenResponse.json();
 
-        if (!token) return;
+        if (!tokenData.token) {
+            console.error("Failed to retrieve token from server");
+            return;
+        }
 
+        // 2. Fetch tracks using the token
         const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${tokenData.token}`
             }
         });
+
+        if (!response.ok) {
+            console.error("Spotify API error status:", response.status);
+            return;
+        }
 
         const data = await response.json();
         renderSearchResults(data.tracks.items);
@@ -266,7 +275,7 @@ function renderSearchResults(tracks) {
     dropdown.style.display = "block";
 }
 
-// Attach event listener with a slight debounce
+// Attach event listener with debounce
 let debounceTimer;
 if (searchInput) {
     searchInput.addEventListener("input", (e) => {
@@ -277,7 +286,7 @@ if (searchInput) {
     });
 }
 
-// Close dropdown if user clicks outside of search container
+// Close dropdown if user clicks outside
 document.addEventListener("click", (e) => {
     if (searchContainer && !searchContainer.contains(e.target)) {
         dropdown.style.display = "none";
