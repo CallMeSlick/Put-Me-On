@@ -8,11 +8,15 @@ const toggleTheme = () => {
     localStorage.setItem("theme_preference", isLight ? "light" : "dark");
 };
 
+// Ensure user profile display updates on DOM load
 window.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = localStorage.getItem("theme_preference");
-    if (savedTheme === "light") {
-        document.body.classList.add("light-mode");
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    const userDisplayName = document.getElementById("user-display-name");
+
+    if (loggedInUser && userDisplayName) {
+        userDisplayName.textContent = `@${loggedInUser}`;
     }
+});
 
     checkUserSession();
     checkAuthorPermissions();
