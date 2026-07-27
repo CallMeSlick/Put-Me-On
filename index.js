@@ -869,3 +869,147 @@ if (resetPasswordForm) {
         window.location.href = "signin.html";
     });
 }
+
+// =========================
+// SETTINGS & PERSISTENT SESSION ENGINE
+// =========================
+
+// Update navbar across every page
+function checkUserSession() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    const navActions = document.querySelector(".nav-actions");
+    const currentPage = window.location.pathname.split("/").pop();
+
+    // Do not show settings gear on Auth pages
+    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
+
+    if (loggedInUser && navActions) {
+        let settingsGear = !isAuthPage ? `<a href="settings.html" title="Settings" style="font-size: 20px; text-decoration: none; margin: 0 5px;">⚙️</a>` : '';
+        
+        navActions.innerHTML = `
+            <a href="profile.html" class="nav-post-btn" style="background-color: #7FDBFF; color: black;">👤 @${loggedInUser}</a>
+            ${settingsGear}
+            <button id="theme-button">Toggle Theme</button>
+        `;
+        
+        // Re-attach theme toggle
+        const themeBtn = document.getElementById("theme-button");
+        if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+    }
+}
+
+// 1. Profile Picture Upload Logic
+const pfpInput = document.getElementById("pfp-file-input");
+if (pfpInput) {
+    pfpInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const base64Img = evt.target.result;
+                localStorage.setItem("user_pfp", base64Img);
+                const pfpPreview = document.getElementById("settings-pfp-preview");
+                if (pfpPreview) pfpPreview.src = base64Img;
+                alert("Profile picture updated!");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+// Load custom profile picture if saved
+window.addEventListener("DOMContentLoaded", () => {
+    const savedPfp = localStorage.getItem("user_pfp");
+    if (savedPfp) {
+        const pfpPreview = document.getElementById("settings-pfp-preview");
+        const userPfp = document.getElementById("user-pfp");
+        if (pfpPreview) pfpPreview.src = savedPfp;
+        if (userPfp) userPfp.src = savedPfp;
+    }
+    updateLinkedAppButtons();
+});
+
+// 2. Link / Unlink Music Apps Logic
+let activeTargetApp = "";
+
+function handleLinkApp(appName) {
+    sessionStorage.setItem("target_app", appName);
+    const linkedApps = JSON.parse(localStorage.getItem("linked_apps") || "{}");
+
+    if (linkedApps[appName]) {
+        window.location.href = `link-app.html?action=unlink&app=${encodeURIComponent(appName)}`;
+    } else {
+        window.location.href = `link-app.html?action=link&app=${encodeURIComponent(appName)}`;
+    }
+}
+
+// Setup Link Page UI
+window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get("action");
+    const app = urlParams.get("app");
+
+    if (action === "link" && document.getElementById("service-login-form")) {
+        document.getElementById("app-title").textContent = `Sign in to ${app}`;
+    } else if (action === "unlink" && document.getElementById("unlink-flow-container")) {
+        document.getElementById("link-flow-container").style.display = "none";
+        document.getElementById("unlink-flow-container").style.display = "block";
+    }
+});
+
+const serviceLoginForm = document.getElementById("service-login-form");
+if (serviceLoginForm) {
+    serviceLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("service-email").value.trim();
+        const errorEl = document.getElementById("link-error");
+
+        if (email.length < 3) {
+            errorEl.textContent = "Error: Invalid account credentials!";
+            errorEl.style.display = "block";
+            return;
+        }
+
+        // Show agreement step
+        serviceLoginForm.style.display = "none";
+        document.getElementById("permission-container").style.display = "flex";
+    });
+}
+
+function confirmLinkApp() {
+    const app = sessionStorage.getItem("target_app") || "Spotify";
+    const linkedApps = JSON.parse(localStorage.getItem("linked_apps") || "{}");
+    linkedApps[app] = true;
+    localStorage.setItem("linked_apps", JSON.stringify(linkedApps));
+    window.location.href = "settings.html";
+}
+
+function confirmUnlinkApp() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const app = urlParams.get("app") || "Spotify";
+    const linkedApps = JSON.parse(localStorage.getItem("linked_apps") || "{}");
+    delete linkedApps[app];
+    localStorage.setItem("linked_apps", JSON.stringify(linkedApps));
+    window.location.href = "settings.html";
+}
+
+function updateLinkedAppButtons() {
+    const linkedApps = JSON.parse(localStorage.getItem("linked_apps") || "{}");
+
+    const spotifyBtn = document.getElementById("link-spotify-btn");
+    const appleBtn = document.getElementById("link-applemusic-btn");
+    const youtubeBtn = document.getElementById("link-youtube-btn");
+
+    if (spotifyBtn && linkedApps["Spotify"]) {
+        spotifyBtn.textContent = "Unlink Account";
+        spotifyBtn.style.backgroundColor = "#ff4136";
+    }
+    if (appleBtn && linkedApps["Apple Music"]) {
+        appleBtn.textContent = "Unlink Account";
+        appleBtn.style.backgroundColor = "#ff4136";
+    }
+    if (youtubeBtn && linkedApps["YouTube Music"]) {
+        youtubeBtn.textContent = "Unlink Account";
+        youtubeBtn.style.backgroundColor = "#ff4136";
+    }
+}
