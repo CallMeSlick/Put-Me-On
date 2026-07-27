@@ -1,19 +1,241 @@
 // ==========================================================================
-// REAL-TIME GLOBAL MUSIC SEARCH ENGINE (ALL ARTISTS & SONGS)
+// SYSTEM THEME, SESSION & INITIALIZATION
 // ==========================================================================
 
-let currentSearchFilter = "all";
-let activeSearchQuery = "";
-let fetchedSearchResults = {
-    songs: [],
-    albums: [],
-    artists: [],
-    playlists: []
+const toggleTheme = () => {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+    localStorage.setItem("theme_preference", isLight ? "light" : "dark");
 };
 
+window.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme_preference");
+    if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
+    }
+
+    // Smart return-page tracker (ignores auth pages)
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
+    if (!isAuthPage) {
+        sessionStorage.setItem("lastContentPage", currentPage);
+    }
+
+    checkUserSession();
+    checkAuthorPermissions();
+    loadAuthorPickData();
+    updateProfileStats();
+    initSocialListPage();
+    initSearchEngine();
+
+    const themeBtn = document.getElementById("theme-button");
+    if (themeBtn) {
+        themeBtn.addEventListener("click", toggleTheme);
+    }
+});
+
+function checkUserSession() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    const navActions = document.querySelector(".nav-actions");
+    const currentPage = window.location.pathname.split("/").pop();
+    const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
+
+    if (navActions) {
+        if (loggedInUser) {
+            // Displays exact preserved casing on profile page
+            const userDisplayName = document.getElementById("user-display-name");
+            if (userDisplayName) {
+                userDisplayName.textContent = loggedInUser;
+            }
+
+            let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
+
+            navActions.innerHTML = `
+                <a href="profile.html" class="nav-pill" style="background-color: #7FDBFF; color: #0d0e12;">Profile</a>
+                <a href="index.html#post" class="nav-pill" style="background-color: #b18cff; color: #0d0e12;">Post</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                ${settingsGear}
+            `;
+        } else {
+            navActions.innerHTML = `
+                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+            `;
+        }
+
+        const themeBtn = document.getElementById("theme-button");
+        if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+    }
+}
+
+function signOutUser() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "index.html";
+}
+
+
 // ==========================================================================
-// PROFILE PLAYLIST SUB-TAB SWITCHER
+// SEARCH BAR ENTER KEY REDIRECT
 // ==========================================================================
+
+const searchInput = document.getElementById("music-search");
+if (searchInput) {
+    searchInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && searchInput.value.trim().length > 0) {
+            e.preventDefault();
+            window.location.href = `search.html?query=${encodeURIComponent(searchInput.value.trim())}`;
+        }
+    });
+}
+
+
+// ==========================================================================
+// AUTHENTICATION ENGINE (CASE-PRESERVING & CASE-INSENSITIVE LOGIN)
+// ==========================================================================
+
+function displayAuthError(elementId, message) {
+    const errorEl = document.getElementById(elementId);
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.style.display = "block";
+        errorEl.style.color = "#ff4136";
+        errorEl.style.backgroundColor = "rgba(255, 65, 54, 0.15)";
+        errorEl.style.border = "1px solid #ff4136";
+        errorEl.style.padding = "10px";
+        errorEl.style.borderRadius = "8px";
+        errorEl.style.marginBottom = "15px";
+        errorEl.style.fontWeight = "bold";
+    } else {
+        alert(message);
+    }
+}
+
+// 1. SIGN IN
+const signinForm = document.getElementById("signin-form");
+if (signinForm) {
+    signinForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        try {
+            const usernameInput = document.getElementById("signin-username");
+            const passwordInput = document.getElementById("signin-password");
+
+            if (!usernameInput || !passwordInput) {
+                displayAuthError("auth-error", "Error: Input fields missing. Please refresh.");
+                return;
+            }
+
+            const rawUsername = usernameInput.value.trim();
+            const pass = passwordInput.value;
+
+            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+            // Case-insensitive lookup match
+            const matchedKey = Object.keys(users).find(
+                u => u.toLowerCase() === rawUsername.toLowerCase()
+            );
+
+            if (!matchedKey) {
+                displayAuthError("auth-error", "Error: Username not found. Please check your spelling or Sign Up.");
+                return;
+            }
+
+            if (users[matchedKey].pass !== pass) {
+                displayAuthError("auth-error", "Error: Incorrect password. Please try again.");
+                return;
+            }
+
+            // Save the exact casing entered during sign up
+            const preservedName = users[matchedKey].displayName || matchedKey;
+            localStorage.setItem("loggedInUser", preservedName);
+
+            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
+            window.location.href = returnPage;
+
+        } catch (err) {
+            displayAuthError("auth-error", "Error: An unexpected authentication error occurred.");
+        }
+    });
+}
+
+// 2. SIGN UP
+const signupForm = document.getElementById("signup-form");
+if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        try {
+            const rawUsername = document.getElementById("signup-username").value.trim(); // Preserves "CallMeSlick"
+            const email = document.getElementById("signup-email").value.trim().toLowerCase();
+            const pass = document.getElementById("signup-password").value;
+            const confirmPass = document.getElementById("signup-password-confirm").value;
+
+            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+
+            // Case-insensitive duplicate username check
+            const existingUser = Object.keys(users).find(
+                u => u.toLowerCase() === rawUsername.toLowerCase()
+            );
+
+            if (existingUser) {
+                displayAuthError("signup-error", `Error: The username '${rawUsername}' is already taken!`);
+                return;
+            }
+
+            const existingEmailUser = Object.keys(users).find(u => users[u].email === email);
+            if (existingEmailUser) {
+                displayAuthError("signup-error", "Error: An account is already registered with this Gmail address!");
+                return;
+            }
+
+            if (pass !== confirmPass) {
+                displayAuthError("signup-error", "Error: Passwords do not match. Please retype password.");
+                return;
+            }
+
+            if (pass.length < 4) {
+                displayAuthError("signup-error", "Error: Password must be at least 4 characters long.");
+                return;
+            }
+
+            // Save exact username casing
+            users[rawUsername] = { 
+                email: email, 
+                pass: pass, 
+                displayName: rawUsername 
+            };
+            
+            localStorage.setItem("pmo_users", JSON.stringify(users));
+            localStorage.setItem("loggedInUser", rawUsername);
+
+            const returnPage = sessionStorage.getItem("lastContentPage") || "index.html";
+            window.location.href = returnPage;
+
+        } catch (err) {
+            displayAuthError("signup-error", "Error: Could not complete registration. Please try again.");
+        }
+    });
+}
+
+
+// ==========================================================================
+// PROFILE TABS & PLAYLIST SUB-TAB SWITCHER
+// ==========================================================================
+
+function switchTab(tabName) {
+    const contents = document.querySelectorAll(".profile-tab-content");
+    const buttons = document.querySelectorAll(".profile-tab-btn");
+
+    contents.forEach(content => content.style.display = "none");
+    buttons.forEach(btn => btn.classList.remove("active-tab"));
+
+    const targetContent = document.getElementById(`tab-${tabName}`);
+    if (targetContent) {
+        targetContent.style.display = "block";
+    }
+}
 
 function switchPlaylistSubTab(serviceName) {
     const titleEl = document.getElementById("playlist-service-title");
@@ -23,7 +245,6 @@ function switchPlaylistSubTab(serviceName) {
     const btnITunes = document.getElementById("sub-btn-itunes");
     const btnYouTube = document.getElementById("sub-btn-youtube");
 
-    // Remove active style from all sub buttons
     [btnSpotify, btnITunes, btnYouTube].forEach(btn => {
         if (btn) btn.classList.remove("active-sub-tab");
     });
@@ -53,6 +274,182 @@ function switchPlaylistSubTab(serviceName) {
     }
 }
 
+function updateProfileStats() {
+    const following = JSON.parse(localStorage.getItem("following_list") || "[]");
+    const followers = JSON.parse(localStorage.getItem("followers_list") || "[]");
+    const artists = JSON.parse(localStorage.getItem("followed_artists_list") || "[]");
+
+    const statFollowers = document.getElementById("stat-followers");
+    const statFollowing = document.getElementById("stat-following");
+    const statArtists = document.getElementById("stat-artists");
+
+    if (statFollowers) statFollowers.textContent = followers.length;
+    if (statFollowing) statFollowing.textContent = following.length;
+    if (statArtists) statArtists.textContent = artists.length;
+}
+
+
+// ==========================================================================
+// AUTHOR PICK ADMIN PERMISSIONS (@CallMeSlick)
+// ==========================================================================
+
+function checkAuthorPermissions() {
+    const loggedInUser = (localStorage.getItem("loggedInUser") || "").toLowerCase();
+    const editControls = document.getElementById("author-edit-controls");
+
+    if ((loggedInUser === "callmeslick" || loggedInUser === "callmesiick") && editControls) {
+        editControls.style.display = "block";
+    }
+}
+
+function toggleAuthorForm() {
+    const form = document.getElementById("author-update-form");
+    if (form) {
+        form.style.display = form.style.display === "none" ? "flex" : "none";
+    }
+}
+
+function loadAuthorPickData() {
+    const savedPick = JSON.parse(localStorage.getItem("author_custom_pick") || "null");
+    if (savedPick) {
+        const songEl = document.getElementById("author-song-title");
+        const artistEl = document.getElementById("author-artist-name");
+        const albumEl = document.getElementById("author-album-name");
+        const genreEl = document.getElementById("author-genre-name");
+        const descEl = document.getElementById("author-description-text");
+
+        if (songEl) songEl.textContent = savedPick.song;
+        if (artistEl) artistEl.textContent = savedPick.artist;
+        if (albumEl) albumEl.textContent = savedPick.album;
+        if (genreEl) genreEl.textContent = savedPick.genre;
+        if (descEl) descEl.textContent = savedPick.desc;
+    }
+}
+
+const authorUpdateForm = document.getElementById("author-update-form");
+if (authorUpdateForm) {
+    authorUpdateForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const pickData = {
+            song: document.getElementById("edit-song-title").value.trim(),
+            artist: document.getElementById("edit-artist-name").value.trim(),
+            album: document.getElementById("edit-album-name").value.trim(),
+            genre: document.getElementById("edit-genre-name").value.trim(),
+            desc: document.getElementById("edit-description").value.trim()
+        };
+
+        localStorage.setItem("author_custom_pick", JSON.stringify(pickData));
+        loadAuthorPickData();
+        toggleAuthorForm();
+        alert("Author Pick updated successfully!");
+    });
+}
+
+
+// ==========================================================================
+// DYNAMIC SOCIAL FOLLOW LISTS
+// ==========================================================================
+
+const mockCommunityData = [
+    { username: "Alex_NYC", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Jordan_Chi", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Sophia_FL", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "Taylor_LA", pfp: "PutMeOnMascot.png", type: "user" },
+    { username: "The Weeknd", pfp: "PutMeOnLogo.png", type: "artist" },
+    { username: "Kendrick Lamar", pfp: "PutMeOnLogo.png", type: "artist" },
+    { username: "SZA", pfp: "PutMeOnLogo.png", type: "artist" }
+];
+
+function initSocialListPage() {
+    const listContainer = document.getElementById("social-accounts-list");
+    const searchInputEl = document.getElementById("social-user-search");
+    const titleEl = document.getElementById("social-title");
+
+    if (!listContainer) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewType = urlParams.get("type") || "following";
+
+    if (titleEl) {
+        if (viewType === "followers") titleEl.textContent = "👥 Followers";
+        else if (viewType === "artists") titleEl.textContent = "🎤 Followed Artists";
+        else titleEl.textContent = "🎧 Following";
+    }
+
+    renderSocialList("", viewType);
+
+    if (searchInputEl) {
+        searchInputEl.addEventListener("input", (e) => {
+            renderSocialList(e.target.value.trim().toLowerCase(), viewType);
+        });
+    }
+}
+
+function renderSocialList(filterText, viewType) {
+    const listContainer = document.getElementById("social-accounts-list");
+    if (!listContainer) return;
+
+    listContainer.innerHTML = "";
+    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
+
+    const filtered = mockCommunityData.filter(item => {
+        const matchesName = item.username.toLowerCase().includes(filterText);
+        if (viewType === "artists") return matchesName && item.type === "artist";
+        return matchesName && item.type === "user";
+    });
+
+    filtered.forEach(item => {
+        const isFollowing = followingList.includes(item.username);
+        const card = document.createElement("div");
+        card.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #161922; padding: 12px 18px; border-radius: 12px; border: 1px solid rgba(127,219,255,0.2);";
+
+        card.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <img src="${item.pfp}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                <strong style="color: white; font-size: 15px;">@${item.username}</strong>
+            </div>
+            <button class="nav-pill" onclick="toggleFollowUser('${item.username}', this)" style="background-color: ${isFollowing ? '#ff4136' : '#7FDBFF'}; color: ${isFollowing ? 'white' : 'black'}; font-size: 16px; padding: 6px 16px;">
+                ${isFollowing ? '-' : '+'}
+            </button>
+        `;
+
+        listContainer.appendChild(card);
+    });
+}
+
+function toggleFollowUser(username, btnEl) {
+    let followingList = JSON.parse(localStorage.getItem("following_list") || "[]");
+
+    if (followingList.includes(username)) {
+        followingList = followingList.filter(u => u !== username);
+        btnEl.textContent = "+";
+        btnEl.style.backgroundColor = "#7FDBFF";
+        btnEl.style.color = "black";
+    } else {
+        followingList.push(username);
+        btnEl.textContent = "-";
+        btnEl.style.backgroundColor = "#ff4136";
+        btnEl.style.color = "white";
+    }
+
+    localStorage.setItem("following_list", JSON.stringify(followingList));
+    updateProfileStats();
+}
+
+
+// ==========================================================================
+// REAL-TIME GLOBAL MUSIC SEARCH ENGINE (ALL ARTISTS, SONGS, ALBUMS)
+// ==========================================================================
+
+let currentSearchFilter = "all";
+let activeSearchQuery = "";
+let fetchedSearchResults = {
+    songs: [],
+    albums: [],
+    artists: [],
+    playlists: []
+};
+
 function initSearchEngine() {
     const resultsContainer = document.getElementById("search-results-container");
     const labelEl = document.getElementById("search-query-label");
@@ -71,7 +468,6 @@ function initSearchEngine() {
         labelEl.textContent = `Searching global music database for "${activeSearchQuery}"...`;
     }
 
-    // Call the real-time music API
     fetchGlobalMusicData(activeSearchQuery);
 }
 
@@ -80,15 +476,13 @@ async function fetchGlobalMusicData(query) {
     const container = document.getElementById("search-results-container");
 
     try {
-        // Query the global iTunes / Apple Music search API for any artist or track
         const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=25&entity=song,album,musicArtist`);
         const data = await response.json();
 
-        // Separate raw API results into Songs, Albums, and Artists
         fetchedSearchResults.songs = [];
         fetchedSearchResults.albums = [];
         fetchedSearchResults.artists = [];
-        fetchedSearchResults.playlists = []; // Simulated community playlists matching query
+        fetchedSearchResults.playlists = [];
 
         data.results.forEach(item => {
             if (item.wrapperType === "track") {
@@ -117,11 +511,12 @@ async function fetchGlobalMusicData(query) {
             }
         });
 
-        // Add matching community playlist
+        // Add matching community playlist dynamically
+        const currentUser = localStorage.getItem("loggedInUser") || "CallMeSlick";
         fetchedSearchResults.playlists.push({
             id: `pl-${Date.now()}`,
             title: `Essential ${query} Mix`,
-            creator: "CallMeSlick",
+            creator: currentUser,
             songsCount: 20,
             cover: "PutMeOnLogo.png"
         });
@@ -166,7 +561,7 @@ function renderSearchResults() {
     container.innerHTML = "";
     let hasAnyResults = false;
 
-    // --- 1. SONGS ---
+    // 1. SONGS
     if ((currentSearchFilter === 'all' || currentSearchFilter === 'songs') && fetchedSearchResults.songs.length > 0) {
         hasAnyResults = true;
         const section = document.createElement("div");
@@ -188,7 +583,7 @@ function renderSearchResults() {
         container.appendChild(section);
     }
 
-    // --- 2. ALBUMS ---
+    // 2. ALBUMS
     if ((currentSearchFilter === 'all' || currentSearchFilter === 'albums') && fetchedSearchResults.albums.length > 0) {
         hasAnyResults = true;
         const section = document.createElement("div");
@@ -210,7 +605,7 @@ function renderSearchResults() {
         container.appendChild(section);
     }
 
-    // --- 3. ARTISTS ---
+    // 3. ARTISTS
     if ((currentSearchFilter === 'all' || currentSearchFilter === 'artists') && fetchedSearchResults.artists.length > 0) {
         hasAnyResults = true;
         const section = document.createElement("div");
@@ -232,7 +627,7 @@ function renderSearchResults() {
         container.appendChild(section);
     }
 
-    // --- 4. PLAYLISTS ---
+    // 4. PLAYLISTS
     if ((currentSearchFilter === 'all' || currentSearchFilter === 'playlists') && fetchedSearchResults.playlists.length > 0) {
         hasAnyResults = true;
         const section = document.createElement("div");
