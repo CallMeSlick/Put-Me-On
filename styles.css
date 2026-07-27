@@ -1,3 +1,7 @@
+/* ==========================================================================
+   PUT ME ON - FULL STYLESHEET
+   ========================================================================== */
+
 body {
     background-color: #0d0e12;
     color: #f3f4f6;
@@ -18,7 +22,7 @@ h1 {
 
 h2 {
     color: #b18cff;
-    margin-top: 50px;
+    margin-top: 40px;
     font-size: 32px;
 }
 
@@ -45,11 +49,11 @@ hr {
     width: 80%;
 }
 
-/* ========================= */
-/* BUTTONS & LINKS */
-/* ========================= */
+/* ==========================================================================
+   BUTTONS & GENERAL LINKS
+   ========================================================================== */
 
-button {
+button, .btn-primary {
     background-color: #7FDBFF;
     color: #0d0e12;
     border: none;
@@ -63,16 +67,10 @@ button {
     transition: all 0.3s ease;
 }
 
-button:hover {
+button:hover, .btn-primary:hover {
     background-color: white;
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
-}
-
-img {
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-radius: 10px;
 }
 
 a {
@@ -81,121 +79,138 @@ a {
     transition: color 0.2s;
 }
 
-a:visited {
-    color: #b18cff;
-}
-
 a:hover {
     color: white;
 }
 
-/* ========================= */
-/* STICKY MODERN NAVIGATION WRAPPER */
-/* ========================= */
+/* ==========================================================================
+   BALANCED CENTERED NAVIGATION BAR
+   ========================================================================== */
 
 nav {
     position: sticky;
     top: 0;
-    background-color: rgba(22, 25, 34, 0.95);
-    backdrop-filter: blur(8px);
+    background-color: rgba(13, 14, 18, 0.95);
+    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(127, 219, 255, 0.2);
-    padding: 12px 24px;
+    padding: 12px 30px;
     z-index: 1000;
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1250px;
     margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr; /* Centers search bar perfectly */
     align-items: center;
-    gap: 15px;
-}
-
-.navbar-links {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
     gap: 20px;
 }
 
-.navbar-links a {
-    color: #cbd5e1;
-    font-weight: 600;
-    font-size: 15px;
+/* Left Links */
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.navbar-links a:hover {
-    color: #7FDBFF;
-}
-
-/* SEARCH BAR RESIDING IN NAVBAR */
+/* Center Search Bar Container */
 .nav-search-container {
-    flex-grow: 1;
-    max-width: 450px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 #music-search {
     width: 100%;
     box-sizing: border-box;
     padding: 10px 18px;
-    border-radius: 20px;
-    border: 1px solid rgba(177, 140, 255, 0.6);
-    background-color: #0d0e12;
+    border-radius: 25px;
+    border: 1px solid rgba(127, 219, 255, 0.4);
+    background-color: #161922;
     color: white;
     font-size: 14px;
     outline: none;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
 #music-search:focus {
     border-color: #7FDBFF;
-    box-shadow: 0 0 10px rgba(127, 219, 255, 0.3);
+    box-shadow: 0 0 12px rgba(127, 219, 255, 0.4);
+    text-align: left;
 }
 
-/* QUICK ACTIONS SET CONTAINER */
+/* Right Action Area */
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-.nav-post-btn {
-    background-color: #b18cff;
-    color: #0d0e12;
+/* Color Bubble / Pill Styling */
+.nav-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 8px 16px;
     border-radius: 20px;
-    font-weight: bold;
-    font-size: 14px;
-    transition: all 0.2s;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
 
-.nav-post-btn:hover {
-    background-color: white;
-    color: black;
-    transform: translateY(-1px);
+.nav-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-#theme-button {
+/* Custom Colored Bubbles */
+.nav-home {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f3f4f6;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.nav-ai {
+    background-color: rgba(177, 140, 255, 0.15);
+    color: #b18cff;
+    border: 1px solid #b18cff;
+}
+
+.nav-msg {
+    background-color: rgba(127, 219, 255, 0.15);
+    color: #7FDBFF;
+    border: 1px solid #7FDBFF;
+}
+
+.nav-signin {
     background-color: transparent;
     color: #7FDBFF;
     border: 1px solid #7FDBFF;
-    padding: 8px 14px;
-    margin: 0;
-    font-size: 13px;
-    border-radius: 20px;
-    box-shadow: none;
 }
 
-#theme-button:hover {
+.nav-signup {
     background-color: #7FDBFF;
     color: #0d0e12;
 }
 
-/* ========================= */
-/* HEADER HERO BLOCK */
-/* ========================= */
+.nav-theme {
+    background-color: #161922;
+    color: #a0aec0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0;
+}
+
+/* ==========================================================================
+   HEADER & HERO SECTIONS
+   ========================================================================== */
 
 .header-container {
     display: flex;
@@ -218,14 +233,6 @@ nav {
     to { transform: rotate(360deg); }
 }
 
-.header-content {
-    width: 100%;
-}
-
-.header-buttons-container {
-    margin: 20px 0;
-}
-
 .header-button {
     background-color: transparent;
     color: #7FDBFF;
@@ -241,9 +248,35 @@ nav {
     color: #0d0e12;
 }
 
-/* ========================= */
-/* CONTAINER BOXES */
-/* ========================= */
+/* ==========================================================================
+   CONTAINERS & CARDS
+   ========================================================================== */
+
+.section-container {
+    background-color: #161922;
+    border-radius: 16px;
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 800px;
+    border: 1px solid rgba(127, 219, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.center-page {
+    max-width: 800px;
+    margin: 40px auto !important;
+    text-align: center !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-page p {
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .song-card {
     background-color: #161922;
@@ -253,25 +286,6 @@ nav {
     border-radius: 16px;
     border: 1px solid rgba(127, 219, 255, 0.3);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.putmeon-box {
-    background-color: #161922;
-    border-radius: 16px;
-    padding: 35px;
-    margin: 40px auto;
-    max-width: 800px;
-    border: 1px solid rgba(177, 140, 255, 0.4);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.putmeon-title {
-    color: #ff4136;
-    font-size: 60px;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-family: Arial, sans-serif;
-    letter-spacing: 1px;
 }
 
 .feature-box {
@@ -286,84 +300,22 @@ nav {
     align-items: center;
 }
 
-ul:not(.navbar-links) {
-    max-width: 600px;
-    margin: auto;
-    text-align: left;
-    background: #11131a;
-    padding: 20px 40px;
-    border-radius: 12px;
-    border-left: 4px solid #7FDBFF;
-}
-
-ul li {
-    margin-bottom: 12px;
-    color: #e2e8f0;
-}
-
-/* ========================= */
-/* PETITION SECTION */
-/* ========================= */
-
-.petition {
+.putmeon-box {
     background-color: #161922;
-    border: 1px solid rgba(127, 219, 255, 0.3);
     border-radius: 16px;
-    max-width: 1000px;
-    margin: 50px auto;
     padding: 35px;
+    margin: 40px auto;
+    max-width: 800px;
+    border: 1px solid rgba(177, 140, 255, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.petition-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 40px;
-    margin-top: 25px;
-    margin-bottom: 25px;
-}
-
-.petition-para {
-    width: 50%;
-    text-align: left;
-    line-height: 1.7;
-}
-
-.signatures {
-    width: 50%;
-    text-align: left;
-}
-
-.signatures p {
-    margin-bottom: 15px;
-}
-
-#sign-petition {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-#sign-petition input {
-    background-color: #0d0e12;
-    color: white;
-    padding: 12px;
-    width: 320px;
-    border-radius: 8px;
-    border: 1px solid rgba(127, 219, 255, 0.4);
-    font-size: 16px;
-}
-
-#sign-petition input:focus {
-    outline: none;
-    border-color: #7FDBFF;
-}
-
-.error {
-    border: 2px solid #ff4136 !important;
-    background-color: rgba(255, 65, 54, 0.15) !important;
+.putmeon-title {
+    color: #ff4136;
+    font-size: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .footer {
@@ -376,245 +328,9 @@ ul li {
     color: #a0aec0;
 }
 
-/* ========================= */
-/* REVISED BALANCED LIGHT MODE STYLES */
-/* ========================= */
-
-.light-mode {
-    background-color: #f8fafc;
-    color: #1e293b;
-}
-
-.light-mode nav {
-    background-color: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.light-mode .navbar-links a {
-    color: #475569;
-}
-
-.light-mode .navbar-links a:hover {
-    color: #0066cc;
-}
-
-.light-mode #music-search {
-    background-color: #f1f5f9;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-}
-
-.light-mode #music-search:focus {
-    border-color: #0066cc;
-}
-
-.light-mode h1 {
-    color: #0066cc;
-    text-shadow: none;
-}
-
-.light-mode h2 {
-    color: #6366f1;
-}
-
-.light-mode hr {
-    background: linear-gradient(to right, transparent, #0066cc, transparent);
-}
-
-.light-mode .song-card,
-.light-mode .feature-box,
-.light-mode .putmeon-box,
-.light-mode .petition,
-.light-mode ul:not(.navbar-links) {
-    background-color: #ffffff;
-    color: #1e293b;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.light-mode ul:not(.navbar-links) {
-    border-left: 4px solid #0066cc;
-}
-
-.light-mode p {
-    color: #475569;
-}
-
-.light-mode #sign-petition input {
-    background-color: #f8fafc;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-}
-
-.light-mode #theme-button {
-    border-color: #0066cc;
-    color: #0066cc;
-}
-
-.light-mode #theme-button:hover {
-    background-color: #0066cc;
-    color: white;
-}
-
-.light-mode .footer {
-    background-color: #f1f5f9;
-    color: #64748b;
-    border-top: 1px solid #e2e8f0;
-}
-
-/* ========================= */
-/* SCROLL REVEAL STYLES */
-/* ========================= */
-
-.revealable {
-    position: relative;
-    transform: translateY(40px);
-    opacity: 0;
-}
-
-.revealable.active {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* ========================= */
-/* MODAL POPUP STYLES */
-/* ========================= */
-
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(6px);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #161922;
-    border: 2px solid #7FDBFF;
-    border-radius: 20px;
-    padding: 35px;
-    max-width: 450px;
-    width: 85%;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-#close-modal-btn {
-    position: absolute;
-    top: 12px;
-    right: 20px;
-    color: #a0aec0;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-#close-modal-btn:hover {
-    color: #7FDBFF;
-}
-
-#modal-img {
-    width: 160px;
-    height: auto;
-    margin-top: 20px;
-    transition: transform 0.1s ease-in-out;
-}
-
-/* Light Mode Modal Support */
-.light-mode .modal-content {
-    background-color: #ffffff;
-    color: #1e293b;
-    border: 2px solid #0066cc;
-}
-
-/* ========================= */
-/* SPOTIFY DROPDOWN SEARCH RESULTS */
-/* ========================= */
-
-.nav-search-container {
-    position: relative;
-}
-
-.search-dropdown {
-    position: absolute;
-    top: 45px;
-    left: 0;
-    right: 0;
-    background-color: #161922;
-    border: 1px solid rgba(127, 219, 255, 0.4);
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-    max-height: 300px;
-    overflow-y: auto;
-    display: none;
-    z-index: 1001;
-    text-align: left;
-}
-
-.search-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.search-item:last-child {
-    border-bottom: none;
-}
-
-.search-item:hover {
-    background-color: rgba(127, 219, 255, 0.15);
-}
-
-.search-item img {
-    width: 42px;
-    height: 42px;
-    border-radius: 6px;
-    margin-right: 12px;
-    margin-top: 0;
-    margin-bottom: 0;
-    object-fit: cover;
-}
-
-.search-item-info strong {
-    color: #f3f4f6;
-    font-size: 14px;
-}
-
-.search-item-info small {
-    color: #a0aec0;
-    font-size: 12px;
-}
-
-/* Light Mode Support */
-.light-mode .search-dropdown {
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.light-mode .search-item-info strong {
-    color: #0f172a;
-}
-
-.light-mode .search-item:hover {
-    background-color: rgba(0, 102, 204, 0.1);
-}
-
-/* ========================= */
-/* PROFILE PAGE TAB STYLES */
-/* ========================= */
+/* ==========================================================================
+   PROFILE PAGE TABS
+   ========================================================================== */
 
 .profile-tab-btn {
     background-color: transparent;
@@ -639,284 +355,47 @@ ul li {
     font-weight: bold;
 }
 
-/* Light Mode Tab Support */
-.light-mode .profile-tab-btn {
+/* ==========================================================================
+   LIGHT MODE STYLES
+   ========================================================================== */
+
+.light-mode {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.light-mode nav {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.light-mode #music-search {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+}
+
+.light-mode h1 {
+    color: #0066cc;
+    text-shadow: none;
+}
+
+.light-mode .section-container,
+.light-mode .song-card,
+.light-mode .feature-box,
+.light-mode .putmeon-box {
+    background-color: #ffffff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.light-mode p {
+    color: #475569;
+}
+
+.light-mode .footer {
+    background-color: #f1f5f9;
     color: #64748b;
-    border-color: #cbd5e1;
-}
-
-.light-mode .profile-tab-btn.active-tab {
-    background-color: #0066cc;
-    color: white;
-    border-color: #0066cc;
-}
-
-/* ========================= */
-/* MESSAGING & GROUP CHAT STYLES */
-/* ========================= */
-
-.unread-badge {
-    background-color: #ff4136;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 2px 7px;
-    border-radius: 12px;
-    margin-left: 6px;
-}
-
-.chat-app-container {
-    display: flex;
-    max-width: 1100px;
-    height: 75vh;
-    margin: 30px auto;
-    background: #161922;
-    border-radius: 16px;
-    border: 1px solid rgba(127, 219, 255, 0.3);
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-.chat-sidebar {
-    width: 320px;
-    border-right: 1px solid rgba(127, 219, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    background: rgba(13, 14, 18, 0.6);
-}
-
-.sidebar-header {
-    padding: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
-}
-
-.sidebar-header h2 {
-    margin: 0;
-    font-size: 20px;
-    color: #7FDBFF;
-}
-
-.threads-list {
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
-.thread-card {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.thread-card:hover, .thread-card.active-thread {
-    background: rgba(127, 219, 255, 0.12);
-}
-
-.thread-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    margin-right: 12px;
-    object-fit: cover;
-}
-
-.group-avatar-icon {
-    background: #b18cff;
-    color: #0d0e12;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-}
-
-.thread-info {
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-.thread-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.thread-name {
-    color: #f3f4f6;
-    font-size: 14px;
-}
-
-.thread-time {
-    color: #a0aec0;
-    font-size: 11px;
-}
-
-.thread-preview {
-    margin: 3px 0 0 0;
-    padding: 0;
-    font-size: 12px;
-    color: #a0aec0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.chat-window {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #0d0e12;
-    background-size: cover;
-    background-position: center;
-    transition: background 0.3s ease;
-}
-
-.chat-header {
-    padding: 15px 20px;
-    background: rgba(22, 25, 34, 0.95);
-    border-bottom: 1px solid rgba(127, 219, 255, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.chat-header h3 {
-    margin: 0;
-    color: #7FDBFF;
-}
-
-.chat-messages {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.message-bubble {
-    max-width: 65%;
-    padding: 10px 14px;
-    border-radius: 14px;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.message-bubble.received {
-    align-self: flex-start;
-    background: #161922;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #f3f4f6;
-}
-
-.message-bubble.sent {
-    align-self: flex-end;
-    background: #7FDBFF;
-    color: #0d0e12;
-    font-weight: 500;
-}
-
-.message-sender {
-    display: block;
-    font-size: 10px;
-    opacity: 0.75;
-    margin-bottom: 4px;
-}
-
-.shared-song-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(0, 0, 0, 0.25);
-    padding: 8px;
-    border-radius: 8px;
-    margin-top: 6px;
-    cursor: pointer;
-}
-
-.shared-song-card img {
-    width: 36px;
-    height: 36px;
-    margin: 0;
-    border-radius: 4px;
-}
-
-.chat-input-area {
-    padding: 15px;
-    background: rgba(22, 25, 34, 0.95);
-    border-top: 1px solid rgba(127, 219, 255, 0.2);
-    display: flex;
-    gap: 10px;
-}
-
-.chat-input-area input {
-    flex-grow: 1;
-    padding: 12px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(127, 219, 255, 0.3);
-    background: #0d0e12;
-    color: white;
-    font-size: 14px;
-}
-
-.close-modal-btn {
-    position: absolute;
-    top: 12px;
-    right: 20px;
-    font-size: 28px;
-    cursor: pointer;
-    color: #a0aec0;
-}
-
-/* ========================= */
-/* PAGE CENTERING UTILITIES */
-/* ========================= */
-
-.center-page {
-    max-width: 800px;
-    margin: 40px auto !important;
-    text-align: center !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.center-page p {
-    text-align: center !important;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* ========================= */
-/* EQUALLY SPACED NAVBAR TABS */
-/* ========================= */
-
-.nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-}
-
-.navbar-links {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px; /* Equal spacing across links */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Equal button spacing */
+    border-top: 1px solid #e2e8f0;
 }
