@@ -746,3 +746,90 @@ function renderSearchResults() {
         `;
     }
 }
+
+// ==========================================================================
+// SETTINGS PAGE INITIALIZATION & DATA SAVING
+// ==========================================================================
+
+function initSettingsPage() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (!loggedInUser) return;
+
+    const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+    
+    // Find matching user record regardless of input casing
+    const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
+    const userData = matchedKey ? users[matchedKey] : null;
+
+    if (userData) {
+        const usernameInput = document.getElementById("settings-username");
+        const emailInput = document.getElementById("settings-email");
+        const fnInput = document.getElementById("settings-firstname");
+        const lnInput = document.getElementById("settings-lastname");
+        const bdayInput = document.getElementById("settings-birthday");
+        const pfpPreview = document.getElementById("settings-pfp-preview");
+
+        // Populate fields with current saved user info
+        if (usernameInput) usernameInput.value = userData.displayName || matchedKey;
+        if (emailInput) emailInput.value = userData.email || "";
+        if (fnInput) fnInput.value = userData.firstName || "";
+        if (lnInput) lnInput.value = userData.lastName || "";
+        if (bdayInput) bdayInput.value = userData.birthday || "";
+        if (pfpPreview && userData.pfp) pfpPreview.src = userData.pfp;
+    }
+
+    // Connect image upload button to hidden file input
+    const changePfpBtn = document.getElementById("change-pfp-btn");
+    const pfpFileInput = document.getElementById("pfp-file-input");
+
+    if (changePfpBtn && pfpFileInput) {
+        changePfpBtn.addEventListener("click", () => {
+            pfpFileInput.click();
+        });
+
+        pfpFileInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imageDataUrl = event.target.result;
+                    const pfpPreview = document.getElementById("settings-pfp-preview");
+                    if (pfpPreview) pfpPreview.src = imageDataUrl;
+
+                    if (matchedKey && users[matchedKey]) {
+                        users[matchedKey].pfp = imageDataUrl;
+                        localStorage.setItem("pmo_users", JSON.stringify(users));
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Form submission logic
+    const form = document.getElementById("settings-info-form");
+    if (form) {
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (matchedKey && users[matchedKey]) {
+                const newUsername = document.getElementById("settings-username").value.trim();
+                
+                // Update properties while preserving exact user capitalization
+                users[matchedKey].displayName = newUsername;
+                users[matchedKey].email = document.getElementById("settings-email").value.trim();
+                users[matchedKey].firstName = document.getElementById("settings-firstname").value.trim();
+                users[matchedKey].lastName = document.getElementById("settings-lastname").value.trim();
+                users[matchedKey].birthday = document.getElementById("settings-birthday").value;
+                
+                const newPass = document.getElementById("settings-password").value;
+                if (newPass) users[matchedKey].pass = newPass;
+
+                localStorage.setItem("pmo_users", JSON.stringify(users));
+                localStorage.setItem("loggedInUser", newUsername); // Update active session with exact casing
+
+                alert("Account settings saved successfully!");
+                location.reload();
+            }
+        });
+    }
+}
