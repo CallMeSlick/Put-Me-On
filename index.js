@@ -42,10 +42,15 @@ function checkUserSession() {
 
     if (navActions) {
         if (loggedInUser) {
-            // Displays exact preserved casing on profile page
+            // Retrieve exact stored display name if available to preserve exact capitalization
+            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+            const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
+            const exactDisplayName = (matchedKey && users[matchedKey].displayName) ? users[matchedKey].displayName : loggedInUser;
+
+            // Display exact username on profile page without modifying case
             const userDisplayName = document.getElementById("user-display-name");
             if (userDisplayName) {
-                userDisplayName.textContent = loggedInUser;
+                userDisplayName.textContent = exactDisplayName;
             }
 
             let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
@@ -167,7 +172,7 @@ if (signupForm) {
         e.preventDefault();
 
         try {
-            const rawUsername = document.getElementById("signup-username").value.trim(); // Preserves "CallMeSlick"
+            const rawUsername = document.getElementById("signup-username").value.trim(); // Preserves exact casing (e.g., CallMeSlick)
             const email = document.getElementById("signup-email").value.trim().toLowerCase();
             const pass = document.getElementById("signup-password").value;
             const confirmPass = document.getElementById("signup-password-confirm").value;
@@ -438,7 +443,7 @@ function toggleFollowUser(username, btnEl) {
 
 
 // ==========================================================================
-// REAL-TIME GLOBAL MUSIC SEARCH ENGINE (ALL ARTISTS, SONGS, ALBUMS)
+// RELEVANCE-SORTED MUSIC SEARCH ENGINE (TITLE ➔ LYRICS ➔ ARTIST)
 // ==========================================================================
 
 let currentSearchFilter = "all";
@@ -476,7 +481,7 @@ async function fetchGlobalMusicData(query) {
     const container = document.getElementById("search-results-container");
 
     try {
-        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=25&entity=song,album,musicArtist`);
+        const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=50&entity=song,album,musicArtist`);
         const data = await response.json();
 
         fetchedSearchResults.songs = [];
@@ -484,14 +489,28 @@ async function fetchGlobalMusicData(query) {
         fetchedSearchResults.artists = [];
         fetchedSearchResults.playlists = [];
 
+        const lowerQuery = query.toLowerCase();
+
         data.results.forEach(item => {
             if (item.wrapperType === "track") {
+                const titleMatch = item.trackName.toLowerCase().includes(lowerQuery);
+                const artistMatch = item.artistName.toLowerCase().includes(lowerQuery);
+
+                // Assign Priority Score: 1 = Title Match, 2 = Lyric/Other Match, 3 = Artist Match
+                let priorityScore = 2;
+                if (titleMatch) {
+                    priorityScore = 1; // Highest priority for Title Matches
+                } else if (artistMatch) {
+                    priorityScore = 3; // Lower priority if matching Artist only
+                }
+
                 fetchedSearchResults.songs.push({
                     id: item.trackId,
                     title: item.trackName,
                     artist: item.artistName,
                     album: item.collectionName,
-                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb")
+                    cover: item.artworkUrl100.replace("100x100bb", "300x300bb"),
+                    priority: priorityScore
                 });
             } else if (item.wrapperType === "collection") {
                 fetchedSearchResults.albums.push({
@@ -511,7 +530,10 @@ async function fetchGlobalMusicData(query) {
             }
         });
 
-        // Add matching community playlist dynamically
+        // SORT SONGS BY RELEVANCE: Title Matches (1) ➔ Lyric Matches (2) ➔ Artist Matches (3)
+        fetchedSearchResults.songs.sort((a, b) => a.priority - b.priority);
+
+        // Add matching community playlist
         const currentUser = localStorage.getItem("loggedInUser") || "CallMeSlick";
         fetchedSearchResults.playlists.push({
             id: `pl-${Date.now()}`,
