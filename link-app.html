@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Link Account - Put Me On</title>
+    <link href="reset.css" rel="stylesheet" type="text/css" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="PutMeOnLogo.png">
+</head>
+
+<body>
+    <div class="section-container center-page" style="max-width: 450px; margin-top: 60px;">
+        
+        <div id="link-flow-container" style="width: 100%;">
+            <h1 id="app-title" style="color: #7FDBFF; margin-bottom: 10px;">Sign into Service</h1>
+            <p id="app-subtitle" style="color: #a0aec0; margin-bottom: 20px;">Log into your account to connect it with Put Me On.</p>
+
+            <p id="link-error" style="color: #ff4136; display: none; font-weight: bold; margin-bottom: 15px;"></p>
+
+            <form id="service-login-form" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="service-email" placeholder="Service Email / Username" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <input type="password" id="service-password" placeholder="Service Password" required style="padding: 12px; border-radius: 8px; border: 1px solid #7FDBFF; background: #0d0e12; color: white;">
+                <button type="submit" style="padding: 12px; font-size: 16px;">Authorize & Continue</button>
+            </form>
+
+            <div id="permission-container" style="display: none; flex-direction: column; gap: 15px; text-align: center;">
+                <h2 style="color: #1DB954;">Agreement & Permissions</h2>
+                <p style="color: #a0aec0; font-size: 14px;">Put Me On would like permission to view your public and private playlists. We will never alter your library without your permission.</p>
+                <button onclick="confirmLinkApp()" style="padding: 12px; font-size: 16px; background-color: #1DB954; color: black;">Agree & Finish Linking</button>
+            </div>
+        </div>
+
+        <div id="unlink-flow-container" style="display: none; width: 100%;">
+            <h1 style="color: #ff4136; margin-bottom: 10px;">Unlink Service?</h1>
+            <p style="color: #a0aec0; margin-bottom: 20px;">Are you sure you want to unlink this account? Everything you created directly on Put Me On will be saved, but synced playlists will no longer display.</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button onclick="confirmUnlinkApp()" style="background-color: #ff4136; color: white; padding: 12px 24px;">Yes, Unlink</button>
+                <a href="settings.html" class="header-button" style="text-decoration: none; padding: 10px 20px;">Cancel</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
