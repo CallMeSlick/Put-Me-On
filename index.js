@@ -117,6 +117,8 @@ function initSettingsPage() {
     if (!loggedInUser) return;
 
     const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+    
+    // Find matching user record regardless of casing
     const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
     const userData = matchedKey ? users[matchedKey] : null;
 
@@ -128,7 +130,8 @@ function initSettingsPage() {
         const bdayInput = document.getElementById("settings-birthday");
         const pfpPreview = document.getElementById("settings-pfp-preview");
 
-        if (usernameInput) usernameInput.value = userData.displayName || matchedKey;
+        // Populate fields with saved user info
+        if (usernameInput) usernameInput.value = userData.displayName || matchedKey || loggedInUser;
         if (emailInput) emailInput.value = userData.email || "";
         if (fnInput) fnInput.value = userData.firstName || "";
         if (lnInput) lnInput.value = userData.lastName || "";
@@ -136,6 +139,7 @@ function initSettingsPage() {
         if (pfpPreview && userData.pfp) pfpPreview.src = userData.pfp;
     }
 
+    // Connect file upload button
     const changePfpBtn = document.getElementById("change-pfp-btn");
     const pfpFileInput = document.getElementById("pfp-file-input");
 
@@ -163,6 +167,7 @@ function initSettingsPage() {
         });
     }
 
+    // Form Save Handler
     const form = document.getElementById("settings-info-form");
     if (form) {
         form.addEventListener("submit", (e) => {
@@ -170,6 +175,7 @@ function initSettingsPage() {
             if (matchedKey && users[matchedKey]) {
                 const newUsername = document.getElementById("settings-username").value.trim();
                 
+                // Preserve exact username casing
                 users[matchedKey].displayName = newUsername;
                 users[matchedKey].email = document.getElementById("settings-email").value.trim();
                 users[matchedKey].firstName = document.getElementById("settings-firstname").value.trim();
