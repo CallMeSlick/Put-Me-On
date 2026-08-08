@@ -8,13 +8,20 @@ const toggleTheme = () => {
     localStorage.setItem("theme_preference", isLight ? "light" : "dark");
 };
 
+// Capitalize First Letter of Names Automatically
+function capitalizeName(str) {
+    if (!str) return "";
+    return str.trim().split(" ").map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(" ");
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme_preference");
     if (savedTheme === "light") {
         document.body.classList.add("light-mode");
     }
 
-    // Return page tracking
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
     if (!isAuthPage) {
@@ -52,18 +59,14 @@ function checkUserSession() {
     const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
 
     if (loggedInUser) {
-        // Fetch the full users database from localStorage
         const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-        
-        // Find the matching account key (case-insensitive lookup)
         const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
         
-        // Grab the exact raw displayName saved during sign-up/settings
+        // Strictly preserve exact username casing as typed
         const exactDisplayName = (matchedKey && users[matchedKey].displayName) 
             ? users[matchedKey].displayName 
             : (matchedKey || loggedInUser);
 
-        // Inject the EXACT string into profile.html dynamically for ANY user!
         const userDisplayName = document.getElementById("user-display-name");
         if (userDisplayName) {
             userDisplayName.textContent = exactDisplayName;
@@ -114,7 +117,7 @@ if (searchInput) {
 
 
 // ==========================================================================
-// SETTINGS PAGE INITIALIZATION & DATA SAVING
+// SETTINGS PAGE ENGINE (PRE-FILLS SAVED DATA & CAPITALIZES NAMES)
 // ==========================================================================
 
 function initSettingsPage() {
@@ -122,8 +125,6 @@ function initSettingsPage() {
     if (!loggedInUser) return;
 
     const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-    
-    // Find matching user record regardless of casing
     const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
     const userData = matchedKey ? users[matchedKey] : null;
 
@@ -135,11 +136,11 @@ function initSettingsPage() {
         const bdayInput = document.getElementById("settings-birthday");
         const pfpPreview = document.getElementById("settings-pfp-preview");
 
-        // Populate fields with saved user info
+        // Populate fields with saved info & capitalization
         if (usernameInput) usernameInput.value = userData.displayName || matchedKey || loggedInUser;
         if (emailInput) emailInput.value = userData.email || "";
-        if (fnInput) fnInput.value = userData.firstName || "";
-        if (lnInput) lnInput.value = userData.lastName || "";
+        if (fnInput) fnInput.value = capitalizeName(userData.firstName || "");
+        if (lnInput) lnInput.value = capitalizeName(userData.lastName || "");
         if (bdayInput) bdayInput.value = userData.birthday || "";
         if (pfpPreview && userData.pfp) pfpPreview.src = userData.pfp;
     }
@@ -172,29 +173,33 @@ function initSettingsPage() {
         });
     }
 
-    // Form Save Handler
+    // Save Settings Form Handler
     const form = document.getElementById("settings-info-form");
     if (form) {
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             if (matchedKey && users[matchedKey]) {
-                const newUsername = document.getElementById("settings-username").value.trim();
-                
-                // Preserve exact username casing
-                users[matchedKey].displayName = newUsername;
+                const rawUsername = document.getElementById("settings-username").value.trim();
+                const rawFirstName = document.getElementById("settings-firstname").value;
+                const rawLastName = document.getElementById("settings-lastname").value;
+
+                const formattedFirstName = capitalizeName(rawFirstName);
+                const formattedLastName = capitalizeName(rawLastName);
+
+                users[matchedKey].displayName = rawUsername;
+                users[matchedKey].firstName = formattedFirstName;
+                users[matchedKey].lastName = formattedLastName;
                 users[matchedKey].email = document.getElementById("settings-email").value.trim();
-                users[matchedKey].firstName = document.getElementById("settings-firstname").value.trim();
-                users[matchedKey].lastName = document.getElementById("settings-lastname").value.trim();
                 users[matchedKey].birthday = document.getElementById("settings-birthday").value;
-                
+
                 const newPass = document.getElementById("settings-password").value;
                 if (newPass) users[matchedKey].pass = newPass;
 
                 localStorage.setItem("pmo_users", JSON.stringify(users));
-                localStorage.setItem("loggedInUser", newUsername);
+                localStorage.setItem("loggedInUser", rawUsername);
 
                 alert("Account settings saved successfully!");
-                location.reload();
+                window.location.href = "profile.html";
             }
         });
     }
@@ -206,7 +211,7 @@ function handleLinkApp(serviceName) {
 
 
 // ==========================================================================
-// AUTHENTICATION ENGINE (STRICT CASE PRESERVATION)
+// AUTHENTICATION ENGINE (SIGN IN & SIGN UP)
 // ==========================================================================
 
 function displayAuthError(elementId, message) {
@@ -718,7 +723,7 @@ function renderSearchResults() {
     if ((currentSearchFilter === 'all' || currentSearchFilter === 'albums') && fetchedSearchResults.albums.length > 0) {
         hasAnyResults = true;
         const section = document.createElement("div");
-        section.innerHTML = `<h3 style="color: #b18cff; margin-bottom: 12px; text-align: left;">CD Albums</h3>`;
+        section.innerHTML = `<h3 style="color: #b18cff; margin-bottom: 12px; text-align: left;">💿 Albums</h3>`;
 
         fetchedSearchResults.albums.forEach(album => {
             const card = document.createElement("div");
