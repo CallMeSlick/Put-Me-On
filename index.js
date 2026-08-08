@@ -51,20 +51,25 @@ function checkUserSession() {
     const currentPage = window.location.pathname.split("/").pop();
     const isAuthPage = ["signin.html", "signup.html", "forgot-password.html"].includes(currentPage);
 
-    if (navActions) {
-        if (loggedInUser) {
-            // Retrieve exact stored username casing (e.g., CallMeSlick)
-            const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
-            const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
-            const exactDisplayName = (matchedKey && users[matchedKey].displayName) 
-                ? users[matchedKey].displayName 
-                : (matchedKey || loggedInUser);
+    if (loggedInUser) {
+        // Fetch the full users database from localStorage
+        const users = JSON.parse(localStorage.getItem("pmo_users") || "{}");
+        
+        // Find the matching account key (case-insensitive lookup)
+        const matchedKey = Object.keys(users).find(u => u.toLowerCase() === loggedInUser.toLowerCase());
+        
+        // Grab the exact raw displayName saved during sign-up/settings
+        const exactDisplayName = (matchedKey && users[matchedKey].displayName) 
+            ? users[matchedKey].displayName 
+            : (matchedKey || loggedInUser);
 
-            const userDisplayName = document.getElementById("user-display-name");
-            if (userDisplayName) {
-                userDisplayName.textContent = exactDisplayName;
-            }
+        // Inject the EXACT string into profile.html dynamically for ANY user!
+        const userDisplayName = document.getElementById("user-display-name");
+        if (userDisplayName) {
+            userDisplayName.textContent = exactDisplayName;
+        }
 
+        if (navActions) {
             let settingsGear = !isAuthPage ? `<a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>` : '';
 
             navActions.innerHTML = `
@@ -73,18 +78,18 @@ function checkUserSession() {
                 <button id="theme-button" class="nav-pill nav-theme">Theme</button>
                 ${settingsGear}
             `;
-        } else {
-            navActions.innerHTML = `
-                <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
-                <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
-                <button id="theme-button" class="nav-pill nav-theme">Theme</button>
-                <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
-            `;
         }
-
-        const themeBtn = document.getElementById("theme-button");
-        if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+    } else if (navActions) {
+        navActions.innerHTML = `
+            <a href="signin.html" class="nav-pill nav-signin">Sign In</a>
+            <a href="signup.html" class="nav-pill nav-signup">Sign Up</a>
+            <button id="theme-button" class="nav-pill nav-theme">Theme</button>
+            <a href="settings.html" class="nav-pill" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2);" title="Settings">⚙️</a>
+        `;
     }
+
+    const themeBtn = document.getElementById("theme-button");
+    if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 }
 
 function signOutUser() {
